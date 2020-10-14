@@ -11,6 +11,18 @@
   "servers" : [ {
     "url" : "https://api.yclients.com"
   } ],
+  "security" : [ {
+    "bearerAuth" : [ ]
+  } ],
   "paths" : { },
-  "components" : { }
+  "components" : {
+    "schemas" : { },
+    "securitySchemes" : {
+      "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      }
+    }
+  }
 }
