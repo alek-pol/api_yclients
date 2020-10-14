@@ -14,9 +14,137 @@
   "security" : [ {
     "bearerAuth" : [ ]
   } ],
-  "paths" : { },
+  "tags" : [ {
+    "name" : "Directory",
+    "description" : "Справочники"
+  } ],
+  "paths" : {
+    "/api/v1/countries" : {
+      "get" : {
+        "tags" : [ "Directory" ],
+        "summary" : "Список стран",
+        "description" : "### Метод позволяет получить список стран:",
+        "operationId" : "getListOfCountries",
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/inline_response_200"
+                  }
+                },
+                "examples" : {
+                  "countries" : {
+                    "$ref" : "#/components/examples/countries"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components" : {
-    "schemas" : { },
+    "schemas" : {
+      "inline_response_200" : {
+        "required" : [ "currency", "exchange", "full_title", "id", "phone_code", "phone_example", "phone_template", "title" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID страны"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Краткое название страны"
+          },
+          "full_title" : {
+            "type" : "string",
+            "description" : "Полное название страны"
+          },
+          "phone_code" : {
+            "type" : "string",
+            "description" : "Телефонный код"
+          },
+          "phone_template" : {
+            "type" : "string",
+            "description" : "Шаблон номера телефона страны"
+          },
+          "phone_example" : {
+            "type" : "string",
+            "description" : "Пример номера телефона страны"
+          },
+          "currency" : {
+            "type" : "string",
+            "description" : "Валюта"
+          },
+          "exchange" : {
+            "type" : "number",
+            "description" : "Ставка обмена валют по отношению к рублю",
+            "format" : "float"
+          },
+          "lang_id" : {
+            "type" : "integer"
+          },
+          "group_type" : {
+            "type" : "integer"
+          }
+        }
+      }
+    },
+    "examples" : {
+      "countries" : {
+        "value" : [ {
+          "id" : 1,
+          "title" : "Россия",
+          "full_title" : "Российская Федерация",
+          "phone_code" : "7",
+          "phone_template" : "+7 xxx xxx-xx-xx",
+          "phone_example" : "+7 981 123 45-67",
+          "currency" : "₽",
+          "exchange" : 1,
+          "lang_id" : 1,
+          "group_type" : 0
+        }, {
+          "id" : 2,
+          "title" : "Латвия",
+          "full_title" : "Латвийская Республика",
+          "phone_code" : "371",
+          "phone_template" : "+371 xx xxx xxx",
+          "phone_example" : "+371 21 654 987",
+          "currency" : "€",
+          "exchange" : 50,
+          "lang_id" : 4,
+          "group_type" : 1
+        }, {
+          "id" : 3,
+          "title" : "Беларусь",
+          "full_title" : "Республика Беларусь",
+          "phone_code" : "375",
+          "phone_template" : "+375 xx xxx-xx-xx",
+          "phone_example" : "+375 21 654-98-71",
+          "currency" : "BYN",
+          "exchange" : 35,
+          "lang_id" : 1,
+          "group_type" : 2
+        }, {
+          "id" : 4,
+          "title" : "Украина",
+          "full_title" : "Украина",
+          "phone_code" : "380",
+          "phone_template" : "+380 xx xxx-xx-xx",
+          "phone_example" : "+380 44 065-49-87",
+          "currency" : "₴",
+          "exchange" : 4,
+          "lang_id" : 7,
+          "group_type" : 2
+        } ]
+      }
+    },
     "securitySchemes" : {
       "bearerAuth" : {
         "type" : "http",
