@@ -19,6 +19,258 @@
     "description" : "Справочники"
   } ],
   "paths" : {
+    "/api/v1/companies" : {
+      "get" : {
+        "tags" : [ "Companies" ],
+        "summary" : "Список компаний",
+        "description" : "### Метод позволяет получить список компаний:",
+        "operationId" : "GetCompanies",
+        "parameters" : [ {
+          "name" : "group_id",
+          "in" : "query",
+          "description" : "ID сети компаний (Если нужны объекты входящие в конкретную сеть)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "title",
+          "in" : "query",
+          "description" : "Поиск по вхождению подстроки в название компании",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "my",
+          "in" : "query",
+          "description" : "Только для авторизованного пользователя. Если нужно компании, на управление которыми пользователь имеет права",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number",
+            "format" : "double",
+            "example" : 1
+          }
+        }, {
+          "name" : "active",
+          "in" : "query",
+          "description" : "Если нужно получить только активные для онлайн-записи компании",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number",
+            "format" : "double",
+            "example" : 1
+          }
+        }, {
+          "name" : "moderated",
+          "in" : "query",
+          "description" : "Если нужно получить только прошедшие модерацию компании. Т.е. чей контент проверен для публикации",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number",
+            "format" : "double",
+            "example" : 1
+          }
+        }, {
+          "name" : "forBooking",
+          "in" : "query",
+          "description" : "Если нужно получить поле next_slot по каждой компании",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        }, {
+          "name" : "show_groups",
+          "in" : "query",
+          "description" : "Включить в обьект компании список сетей в которые входит эта компания",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "city_id",
+          "in" : "query",
+          "description" : "ID города  (см. метод - __cities__)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 1
+          }
+        }, {
+          "name" : "coordinate_lat",
+          "in" : "query",
+          "description" : "Широта центра поиска по координатам",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "coordinate_lon",
+          "in" : "query",
+          "description" : "Долгота центра поиска по координатам",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "distance",
+          "in" : "query",
+          "description" : "Радиус поиска",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "count",
+          "in" : "query",
+          "description" : "Количество объектов на странице",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Номер страницы",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/company"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Произошла ошибка"
+          }
+        }
+      }
+    },
+    "/api/v1/company/{id}" : {
+      "get" : {
+        "tags" : [ "Companies" ],
+        "summary" : "Список компаний",
+        "operationId" : "GetCompany",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID объекта",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "forBooking",
+          "in" : "query",
+          "description" : "Включить в обьект компании список сетей в которые входит эта компания",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        }, {
+          "name" : "show_groups",
+          "in" : "query",
+          "description" : "Включить в обьект компании список сетей в которые входит эта компания",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/company"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Произошла ошибка"
+          }
+        },
+        "deprecated" : false
+      }
+    },
     "/api/v1/countries" : {
       "get" : {
         "tags" : [ "Directory" ],
@@ -43,6 +295,89 @@
                 }
               }
             }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/cities" : {
+      "get" : {
+        "tags" : [ "Directory" ],
+        "summary" : "Список городов",
+        "description" : "### Метод позволяет получить список городов:\n  __Примечание к параметрам:__\n  - ID страны, из которой нужно получить города;\n  - ID филиала. Если передан, будет возвращен так же город филиала, независимо от того, относится он к указанной стране или нет.",
+        "operationId" : "getListOfCities",
+        "parameters" : [ {
+          "name" : "country_id",
+          "in" : "query",
+          "description" : "ID страны  (см. метод - __countries__)",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 1
+          }
+        }, {
+          "name" : "salon_id",
+          "in" : "query",
+          "description" : "ID филиала",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "example" : 1
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/inline_response_200_1"
+                  }
+                },
+                "examples" : {
+                  "cities" : {
+                    "$ref" : "#/components/examples/cities"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -50,6 +385,292 @@
   },
   "components" : {
     "schemas" : {
+      "company" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Идентификатор компании"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Название компании"
+          },
+          "public_title" : {
+            "type" : "string"
+          },
+          "short_descr" : {
+            "type" : "string",
+            "description" : "Категория компании"
+          },
+          "logo" : {
+            "type" : "string",
+            "description" : "Адрес изображения логотипа компании"
+          },
+          "country_id" : {
+            "type" : "integer",
+            "description" : "Идентификатор страны, в которой расположена компания",
+            "format" : "int32"
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "Название старны компании"
+          },
+          "city_id" : {
+            "type" : "integer",
+            "description" : "Идентификатор города, в котором расположена компания)",
+            "format" : "int32"
+          },
+          "city" : {
+            "type" : "string",
+            "description" : "Название города компании"
+          },
+          "active" : {
+            "type" : "string"
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "Номер телефона компании"
+          },
+          "phones" : {
+            "type" : "array",
+            "description" : "Номера телефонов",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "timezone" : {
+            "type" : "integer",
+            "description" : "Timezone компании"
+          },
+          "timezone_name" : {
+            "type" : "string",
+            "description" : "Timezone компании (название)"
+          },
+          "schedule" : {
+            "type" : "string",
+            "description" : "Расписание работы компании"
+          },
+          "address" : {
+            "type" : "string",
+            "description" : "Адрес, по которому расположена компания"
+          },
+          "coordinate_lat" : {
+            "type" : "number",
+            "description" : "Широта, на которой расположена компания",
+            "format" : "float"
+          },
+          "coordinate_lon" : {
+            "type" : "number",
+            "description" : "Долгота, на которой расположена компания",
+            "format" : "float"
+          },
+          "app_ios" : {
+            "type" : "string",
+            "description" : "Ссылка на приложение под ios"
+          },
+          "app_android" : {
+            "type" : "string",
+            "description" : "Ссылка на приложение под android"
+          },
+          "phone_confirmation" : {
+            "type" : "boolean",
+            "description" : "Нужно ли подтверждать телефон по смс"
+          },
+          "currency_short_title" : {
+            "type" : "string",
+            "description" : "Краткое обозначение валюты"
+          },
+          "reminds_sms_disabled" : {
+            "type" : "boolean",
+            "description" : "True - если у компании выключен сервис SMS напоминаний клиентам"
+          },
+          "reminds_sms_default" : {
+            "type" : "integer"
+          },
+          "group_priority" : {
+            "type" : "integer",
+            "description" : "Чем больше приоритет, тем выше компания при выводе в списке филиалов сети",
+            "format" : "int32"
+          },
+          "bookform_group_priority" : {
+            "type" : "integer"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Описание"
+          },
+          "photos" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "seance_delay_step" : {
+            "type" : "integer"
+          },
+          "show_any_master" : {
+            "type" : "boolean"
+          },
+          "allow_delete_record" : {
+            "type" : "boolean",
+            "description" : "Удаление записи"
+          },
+          "allow_change_record" : {
+            "type" : "boolean",
+            "description" : "Изменение записи"
+          },
+          "allow_change_record_delay_step" : {
+            "type" : "integer",
+            "description" : "Запретить изменять записи за период. (В секундах)"
+          },
+          "allow_delete_record_delay_step" : {
+            "type" : "integer",
+            "description" : "Запретить удалять записи за период. (В секундах)"
+          },
+          "timetable_off" : {
+            "type" : "boolean"
+          },
+          "site" : {
+            "type" : "string",
+            "description" : "Ссылка на сайт"
+          },
+          "zip" : {
+            "type" : "string"
+          },
+          "business_group_id" : {
+            "type" : "integer"
+          },
+          "business_type_id" : {
+            "type" : "integer"
+          },
+          "is_charge_active" : {
+            "type" : "boolean"
+          },
+          "print_bill_on" : {
+            "type" : "integer"
+          },
+          "print_bill_type" : {
+            "type" : "string"
+          },
+          "record_type_id" : {
+            "type" : "integer"
+          },
+          "auto_pay_account_id" : {
+            "type" : "integer"
+          },
+          "auto_pay_bank_account_id" : {
+            "type" : "integer"
+          },
+          "is_admin_app" : {
+            "type" : "integer"
+          },
+          "push_notification_phone_confirm" : {
+            "type" : "integer"
+          },
+          "switched_to_tariff" : {
+            "type" : "boolean"
+          },
+          "sms_enabled" : {
+            "type" : "boolean"
+          },
+          "activity_record_clients_count_max" : {
+            "type" : "integer"
+          },
+          "activity_online_record_clients_count_max" : {
+            "type" : "integer"
+          },
+          "is_individual" : {
+            "type" : "boolean"
+          },
+          "social" : {
+            "$ref" : "#/components/schemas/social"
+          },
+          "main_group_id" : {
+            "type" : "integer"
+          },
+          "main_group" : {
+            "$ref" : "#/components/schemas/company_main_group"
+          },
+          "active_staff_count" : {
+            "type" : "integer",
+            "description" : "Кол-во сотрудников доступных для бронирования",
+            "format" : "int32"
+          },
+          "next_slot" : {
+            "type" : "string",
+            "description" : "Дата и время ближайшего свободного сеанса в компании(ISO8601). Поле будет присутствовать только если передан `GET параметр forBooking=1`"
+          },
+          "booking_notify_text" : {
+            "type" : "string",
+            "description" : "Текст уведомления, которое выводится (если задано) на шаге ввода контактных данных"
+          },
+          "booking_comment_input_name" : {
+            "type" : "string",
+            "description" : "Заголовок для поля с вводом комментария к записи (если не задано, то используется значение по умолчанию)"
+          },
+          "booking_comment_required" : {
+            "type" : "boolean",
+            "description" : "Является ли поле с комментарием к записи обязательным для заполнения"
+          },
+          "booking_email_required" : {
+            "type" : "boolean",
+            "description" : "Является ли поле Email к записи обязательным для заполнения"
+          }
+        }
+      },
+      "social" : {
+        "type" : "object",
+        "properties" : {
+          "facebook" : {
+            "type" : "string",
+            "description" : "Аккаунт в Facebook"
+          },
+          "vk" : {
+            "type" : "string",
+            "description" : "Аккаунт во Вконтакте"
+          },
+          "instagram" : {
+            "type" : "string",
+            "description" : "Аккаунт в Instagram"
+          },
+          "telegram" : {
+            "type" : "string",
+            "description" : "Аккаунт в Telegram"
+          },
+          "whatsapp" : {
+            "type" : "string",
+            "description" : "Аккаунт в Whatsapp"
+          },
+          "viber" : {
+            "type" : "string",
+            "description" : "Аккаунт в Viber"
+          }
+        }
+      },
+      "errors" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "$ref" : "#/components/schemas/errors_errors"
+          }
+        }
+      },
+      "inline_response_401" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean",
+            "description" : "флаг показывающий, что ответ выполнен c ошибкой (false)"
+          },
+          "data" : {
+            "nullable" : true
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/inline_response_401_meta"
+          }
+        }
+      },
       "inline_response_200" : {
         "required" : [ "currency", "exchange", "full_title", "id", "phone_code", "phone_example", "phone_template", "title" ],
         "type" : "object",
@@ -93,6 +714,200 @@
           "group_type" : {
             "type" : "integer"
           }
+        }
+      },
+      "inline_response_200_1" : {
+        "required" : [ "country_id", "id", "title" ],
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID города"
+          },
+          "country_id" : {
+            "type" : "integer",
+            "description" : "ID страны"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Краткое название города"
+          }
+        }
+      },
+      "company_main_group" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        }
+      },
+      "errors_errors" : {
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "integer",
+            "description" : "Код ошибки"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "Текст ошибки"
+          }
+        }
+      },
+      "inline_response_401_meta" : {
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "responses" : {
+      "401_Unauthorized" : {
+        "description" : "Не указаны авторизационные данные",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_401"
+            },
+            "example" : {
+              "success" : false,
+              "meta" : {
+                "message" : "Не указаны авторизационные данные"
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters" : {
+      "id" : {
+        "name" : "id",
+        "in" : "path",
+        "description" : "ID объекта",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "country_id" : {
+        "name" : "country_id",
+        "in" : "query",
+        "description" : "ID страны  (см. метод - __countries__)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer",
+          "example" : 1
+        }
+      },
+      "city_id" : {
+        "name" : "city_id",
+        "in" : "query",
+        "description" : "ID города  (см. метод - __cities__)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer",
+          "example" : 1
+        }
+      },
+      "salon_id" : {
+        "name" : "salon_id",
+        "in" : "query",
+        "description" : "ID филиала",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer",
+          "example" : 1
+        }
+      },
+      "coordinate_lat" : {
+        "name" : "coordinate_lat",
+        "in" : "query",
+        "description" : "Широта центра поиска по координатам",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "coordinate_lon" : {
+        "name" : "coordinate_lon",
+        "in" : "query",
+        "description" : "Долгота центра поиска по координатам",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "distance" : {
+        "name" : "distance",
+        "in" : "query",
+        "description" : "Радиус поиска",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "string"
+        }
+      },
+      "count" : {
+        "name" : "count",
+        "in" : "query",
+        "description" : "Количество объектов на странице",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "page" : {
+        "name" : "page",
+        "in" : "query",
+        "description" : "Номер страницы",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "show_groups" : {
+        "name" : "show_groups",
+        "in" : "query",
+        "description" : "Включить в обьект компании список сетей в которые входит эта компания",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "group_id" : {
+        "name" : "group_id",
+        "in" : "query",
+        "description" : "ID сети компаний (Если нужны объекты входящие в конкретную сеть)",
+        "required" : false,
+        "style" : "form",
+        "explode" : true,
+        "schema" : {
+          "type" : "integer"
         }
       }
     },
@@ -143,10 +958,26 @@
           "lang_id" : 7,
           "group_type" : 2
         } ]
+      },
+      "cities" : {
+        "value" : [ {
+          "id" : 2355,
+          "country_id" : 2,
+          "title" : "Daugavpils"
+        }, {
+          "id" : 1430,
+          "country_id" : 2,
+          "title" : "Jurmala"
+        } ]
       }
     },
     "securitySchemes" : {
       "bearerAuth" : {
+        "type" : "http",
+        "scheme" : "bearer",
+        "bearerFormat" : "JWT"
+      },
+      "bearerUserAuth" : {
         "type" : "http",
         "scheme" : "bearer",
         "bearerFormat" : "JWT"
