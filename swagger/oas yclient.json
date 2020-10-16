@@ -11,20 +11,75 @@
   "servers" : [ {
     "url" : "https://api.yclients.com"
   } ],
-  "security" : [ {
-    "bearerAuth" : [ ]
-  } ],
   "tags" : [ {
     "name" : "Directory",
     "description" : "Справочники"
   } ],
   "paths" : {
+    "/api/v1/auth" : {
+      "post" : {
+        "tags" : [ "Authorization" ],
+        "summary" : "Получение API-ключа пользователя",
+        "description" : "## Метод позволяет получить API-ключ пользователя\n  ---\n__Авторизация с ключом Партнера__",
+        "operationId" : "getUserToken",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200"
+                },
+                "example" : {
+                  "0" : "1234ccbbeeff1234aaddff77ee338811",
+                  "id" : 100001,
+                  "user_token" : "1234ccbbeeff1234aaddff77ee338811",
+                  "name" : "Example_user",
+                  "phone" : "7xxxxxxxxxx",
+                  "login" : "7xxxxxxxxxx",
+                  "email" : "user@example.com",
+                  "avatar" : "https://api.yclients.com/images/no-master.png"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Пользователя с такими параметрами авторизации не существует",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Пользователя с такими параметрами авторизации не существует"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartner" : [ ]
+        } ]
+      }
+    },
     "/api/v1/companies" : {
       "get" : {
         "tags" : [ "Companies" ],
         "summary" : "Список компаний",
-        "description" : "### Метод позволяет получить список компаний:",
-        "operationId" : "GetCompanies",
+        "description" : "### Метод позволяет получить список компаний:\n  ---\n__Возможна авторизация с ключами:__\n  - __Партнера__;\n  - __Партнера__ и __пользователя__.",
+        "operationId" : "getCompanies",
         "parameters" : [ {
           "name" : "group_id",
           "in" : "query",
@@ -53,8 +108,7 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "number",
-            "format" : "double",
+            "type" : "integer",
             "example" : 1
           }
         }, {
@@ -65,8 +119,7 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "number",
-            "format" : "double",
+            "type" : "integer",
             "example" : 1
           }
         }, {
@@ -77,8 +130,7 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "number",
-            "format" : "double",
+            "type" : "integer",
             "example" : 1
           }
         }, {
@@ -89,8 +141,8 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "number",
-            "format" : "double"
+            "type" : "integer",
+            "example" : 1
           }
         }, {
           "name" : "show_groups",
@@ -172,7 +224,22 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/company"
+                    "allOf" : [ {
+                      "$ref" : "#/components/schemas/company"
+                    }, {
+                      "$ref" : "#/components/schemas/access"
+                    }, {
+                      "type" : "object",
+                      "properties" : {
+                        "balance" : {
+                          "type" : "integer"
+                        },
+                        "sms_price" : {
+                          "type" : "number",
+                          "format" : "float"
+                        }
+                      }
+                    } ]
                   }
                 }
               }
@@ -197,13 +264,20 @@
           "500" : {
             "description" : "Произошла ошибка"
           }
-        }
+        },
+        "deprecated" : false,
+        "security" : [ {
+          "bearerPartner" : [ ]
+        }, {
+          "bearerPartnerUser" : [ ]
+        } ]
       }
     },
     "/api/v1/company/{id}" : {
       "get" : {
         "tags" : [ "Companies" ],
-        "summary" : "Список компаний",
+        "summary" : "Получить компанию",
+        "description" : "### Метод позволяет получить компанию: #   --- __Авторизация с ключом Партнера__",
         "operationId" : "GetCompany",
         "parameters" : [ {
           "name" : "id",
@@ -223,8 +297,7 @@
           "style" : "form",
           "explode" : true,
           "schema" : {
-            "type" : "number",
-            "format" : "double"
+            "type" : "integer"
           }
         }, {
           "name" : "show_groups",
@@ -268,15 +341,72 @@
             "description" : "Произошла ошибка"
           }
         },
-        "deprecated" : false
+        "deprecated" : false,
+        "security" : [ {
+          "bearerPartner" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Companies" ],
+        "summary" : "Изменить компанию",
+        "description" : "### Метод позволяет изменить компанию:\n  ---\n__Авторизация с ключами: партнера и пользователя __",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID объекта",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body_1"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно"
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
       }
     },
     "/api/v1/countries" : {
       "get" : {
         "tags" : [ "Directory" ],
         "summary" : "Список стран",
-        "description" : "### Метод позволяет получить список стран:",
+        "description" : "### Метод позволяет получить список стран\n  ---\n__Авторизация с ключом Партнера__",
         "operationId" : "getListOfCountries",
+        "parameters" : [ {
+          "name" : "count",
+          "in" : "query",
+          "description" : "Количество объектов на странице",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Номер страницы",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "Запрос выполнен успешно",
@@ -285,7 +415,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200"
+                    "$ref" : "#/components/schemas/inline_response_200_1"
                   }
                 },
                 "examples" : {
@@ -312,14 +442,17 @@
               }
             }
           }
-        }
+        },
+        "security" : [ {
+          "bearerPartner" : [ ]
+        } ]
       }
     },
     "/api/v1/cities" : {
       "get" : {
         "tags" : [ "Directory" ],
         "summary" : "Список городов",
-        "description" : "### Метод позволяет получить список городов:\n  __Примечание к параметрам:__\n  - ID страны, из которой нужно получить города;\n  - ID филиала. Если передан, будет возвращен так же город филиала, независимо от того, относится он к указанной стране или нет.",
+        "description" : "### Метод позволяет получить список городов\n  ---\n  __Авторизация с ключом Партнера__\n  \n  __Примечание к параметрам:__\n  - ID страны, из которой нужно получить города;\n  - ID филиала. Если передан, будет возвращен так же город филиала, независимо от того, относится он к указанной стране или нет.",
         "operationId" : "getListOfCities",
         "parameters" : [ {
           "name" : "country_id",
@@ -352,7 +485,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_1"
+                    "$ref" : "#/components/schemas/inline_response_200_2"
                   }
                 },
                 "examples" : {
@@ -379,7 +512,10 @@
               }
             }
           }
-        }
+        },
+        "security" : [ {
+          "bearerPartner" : [ ]
+        } ]
       }
     }
   },
@@ -394,10 +530,11 @@
           },
           "title" : {
             "type" : "string",
-            "description" : "Название компании"
+            "description" : "Название филиала (Используется внутри системы)"
           },
           "public_title" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Название компании (Используется на внешних ресурсах)"
           },
           "short_descr" : {
             "type" : "string",
@@ -414,7 +551,7 @@
           },
           "country" : {
             "type" : "string",
-            "description" : "Название старны компании"
+            "description" : "Название страны компании"
           },
           "city_id" : {
             "type" : "integer",
@@ -426,7 +563,7 @@
             "description" : "Название города компании"
           },
           "active" : {
-            "type" : "string"
+            "type" : "integer"
           },
           "phone" : {
             "type" : "string",
@@ -434,7 +571,7 @@
           },
           "phones" : {
             "type" : "array",
-            "description" : "Номера телефонов",
+            "description" : "Номера телефонов компании",
             "items" : {
               "type" : "string"
             }
@@ -536,7 +673,8 @@
             "description" : "Ссылка на сайт"
           },
           "zip" : {
-            "type" : "string"
+            "type" : "integer",
+            "description" : "Почтовый код (индекс)"
           },
           "business_group_id" : {
             "type" : "integer"
@@ -587,7 +725,8 @@
             "$ref" : "#/components/schemas/social"
           },
           "main_group_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : "ID основного филиала"
           },
           "main_group" : {
             "$ref" : "#/components/schemas/company_main_group"
@@ -648,11 +787,64 @@
           }
         }
       },
+      "access" : {
+        "type" : "object",
+        "properties" : {
+          "access" : {
+            "type" : "object",
+            "description" : "Список прав (Только для авторизованного пользователя)"
+          }
+        }
+      },
       "errors" : {
         "type" : "object",
         "properties" : {
           "errors" : {
             "$ref" : "#/components/schemas/errors_errors"
+          }
+        }
+      },
+      "body" : {
+        "type" : "object",
+        "properties" : {
+          "login" : {
+            "type" : "string",
+            "description" : "В качестве логина может быть использован номер телефона пользователя в формате 79161234567 или его Email"
+          },
+          "password" : {
+            "type" : "string",
+            "description" : "Пароль пользователя"
+          }
+        }
+      },
+      "inline_response_200" : {
+        "type" : "object",
+        "properties" : {
+          "0" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "integer"
+          },
+          "user_token" : {
+            "type" : "string",
+            "description" : "API-ключа пользователя"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Имя пользователя"
+          },
+          "phone" : {
+            "type" : "string"
+          },
+          "login" : {
+            "type" : "string"
+          },
+          "email" : {
+            "type" : "string"
+          },
+          "avatar" : {
+            "type" : "string"
           }
         }
       },
@@ -671,8 +863,95 @@
           }
         }
       },
-      "inline_response_200" : {
-        "required" : [ "currency", "exchange", "full_title", "id", "phone_code", "phone_example", "phone_template", "title" ],
+      "apiv1companyid_social" : {
+        "type" : "object",
+        "properties" : {
+          "vk" : {
+            "type" : "string",
+            "description" : "Аккаунт во Вконтакте"
+          },
+          "instagram" : {
+            "type" : "string",
+            "description" : "Аккаунт в Instagram"
+          },
+          "telegram" : {
+            "type" : "string",
+            "description" : "Аккаунт в Telegram"
+          }
+        }
+      },
+      "body_1" : {
+        "required" : [ "title" ],
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "Название филиала (Используется внутри системы)"
+          },
+          "short_descr" : {
+            "type" : "string",
+            "description" : "Категория компании"
+          },
+          "country_id" : {
+            "type" : "integer",
+            "description" : "Идентификатор страны кампании (одно из двух \\ country)"
+          },
+          "country" : {
+            "type" : "string",
+            "description" : "Название страны кампании (одно из двух \\ country_id)"
+          },
+          "city_id" : {
+            "type" : "integer"
+          },
+          "city" : {
+            "type" : "string"
+          },
+          "phones" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "timezone" : {
+            "type" : "integer"
+          },
+          "address" : {
+            "type" : "string"
+          },
+          "coordinate_lat" : {
+            "type" : "number",
+            "description" : "Широта, на которой расположена компания",
+            "format" : "float"
+          },
+          "coordinate_lon" : {
+            "type" : "number",
+            "description" : "Долгота, на которой расположена компания",
+            "format" : "float"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "Описание"
+          },
+          "site" : {
+            "type" : "string",
+            "description" : "Ссылка на сайт"
+          },
+          "zip" : {
+            "type" : "integer",
+            "description" : "Почтовый код (индекс)"
+          },
+          "business_group_id" : {
+            "type" : "integer"
+          },
+          "business_type_id" : {
+            "type" : "integer"
+          },
+          "social" : {
+            "$ref" : "#/components/schemas/apiv1companyid_social"
+          }
+        }
+      },
+      "inline_response_200_1" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -716,8 +995,7 @@
           }
         }
       },
-      "inline_response_200_1" : {
-        "required" : [ "country_id", "id", "title" ],
+      "inline_response_200_2" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -738,12 +1016,15 @@
         "type" : "object",
         "properties" : {
           "id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : "ID основного филиала"
           },
           "title" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "ID наименование филиала"
           }
-        }
+        },
+        "description" : "Объект с информацией об основном филиале"
       },
       "errors_errors" : {
         "type" : "object",
@@ -972,12 +1253,12 @@
       }
     },
     "securitySchemes" : {
-      "bearerAuth" : {
+      "bearerPartner" : {
         "type" : "http",
         "scheme" : "bearer",
         "bearerFormat" : "JWT"
       },
-      "bearerUserAuth" : {
+      "bearerPartnerUser" : {
         "type" : "http",
         "scheme" : "bearer",
         "bearerFormat" : "JWT"
