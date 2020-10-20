@@ -9,14 +9,29 @@
     "version" : "2.0.0"
   },
   "servers" : [ {
-    "url" : "https://api.yclients.com"
+    "url" : "https://api.yclients.com/api/v1"
   } ],
   "tags" : [ {
+    "name" : "Authorization",
+    "description" : "Авторизация пользователя"
+  }, {
+    "name" : "Companies",
+    "description" : "Компании и сети"
+  }, {
+    "name" : "Staff",
+    "description" : "Сотрудники компании"
+  }, {
+    "name" : "Users",
+    "description" : "Пользователи компании"
+  }, {
     "name" : "Directory",
     "description" : "Справочники"
+  }, {
+    "name" : "ToDo",
+    "description" : "Доработать"
   } ],
   "paths" : {
-    "/api/v1/auth" : {
+    "/auth" : {
       "post" : {
         "tags" : [ "Authorization" ],
         "summary" : "Получение API-ключа пользователя",
@@ -74,11 +89,11 @@
         } ]
       }
     },
-    "/api/v1/companies" : {
+    "/companies" : {
       "get" : {
         "tags" : [ "Companies" ],
         "summary" : "Список компаний",
-        "description" : "### Метод позволяет получить список компаний:\n  ---\n__Возможна авторизация с ключами:__\n  - __Партнера__;\n  - __Партнера__ и __пользователя__.",
+        "description" : "### Метод позволяет получить список компаний\n  ---\n__Возможна авторизация с ключами:__\n  - __Партнера__;\n  - __Партнера__ и __пользователя__.",
         "operationId" : "getCompanies",
         "parameters" : [ {
           "name" : "group_id",
@@ -273,11 +288,11 @@
         } ]
       }
     },
-    "/api/v1/company/{id}" : {
+    "/company/{id}" : {
       "get" : {
         "tags" : [ "Companies" ],
         "summary" : "Получить компанию",
-        "description" : "### Метод позволяет получить компанию: #   --- __Авторизация с ключом Партнера__",
+        "description" : "### Метод позволяет получить компанию:\n  ---\n__Авторизация с ключом партнера__",
         "operationId" : "GetCompany",
         "parameters" : [ {
           "name" : "id",
@@ -349,7 +364,7 @@
       "put" : {
         "tags" : [ "Companies" ],
         "summary" : "Изменить компанию",
-        "description" : "### Метод позволяет изменить компанию:\n  ---\n__Авторизация с ключами: партнера и пользователя __",
+        "description" : "### Метод позволяет изменить компанию\n\n  ---\n__Авторизация с ключами: партнера и пользователя__",
         "parameters" : [ {
           "name" : "id",
           "in" : "path",
@@ -372,7 +387,33 @@
         },
         "responses" : {
           "200" : {
-            "description" : "Запрос выполнен успешно"
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Произошла ошибка"
           }
         },
         "security" : [ {
@@ -380,7 +421,705 @@
         } ]
       }
     },
-    "/api/v1/countries" : {
+    "/groups" : {
+      "get" : {
+        "tags" : [ "Companies" ],
+        "summary" : "Список сетей салонов",
+        "description" : "### Метод позволяет получить список доступных пользователю сетей\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "operationId" : "GetNetworksAvailableToUser",
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_2"
+                },
+                "examples" : {
+                  "groups" : {
+                    "$ref" : "#/components/examples/groups"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/company/{company_id}/staff" : {
+      "get" : {
+        "tags" : [ "Staff" ],
+        "summary" : "Список сотрудников",
+        "description" : "### Метод позволяет получить список сотрудников компании\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_3"
+                },
+                "examples" : {
+                  "staff" : {
+                    "$ref" : "#/components/examples/staff"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "examples" : {
+                  "company" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Филиала с идентификатором <_____> не найдено"
+                      }
+                    }
+                  },
+                  "staff" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Сотрудник с идентификатором <_____> не существует"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/company/{company_id}/staff/{staff_id}" : {
+      "get" : {
+        "tags" : [ "Staff" ],
+        "summary" : "Сотрудник по ID",
+        "description" : "### Метод позволяет получить сотрудника компании по ID\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "staff_id",
+          "in" : "path",
+          "description" : "ID сотрудника",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_4"
+                },
+                "examples" : {
+                  "employee" : {
+                    "$ref" : "#/components/examples/employee"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "examples" : {
+                  "company" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Филиала с идентификатором <_____> не найдено"
+                      }
+                    }
+                  },
+                  "staff" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Сотрудник с идентификатором <_____> не существует"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/staff/{company_id}" : {
+      "get" : {
+        "tags" : [ "Staff" ],
+        "summary" : "Устаревшее. Список сотрудников",
+        "description" : "### Метод позволяет список сотрудников компании\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/user"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Staff" ],
+        "summary" : "Создание сотрудника",
+        "description" : "### Метод позволяет создать сотрудника компании\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/staff_create_update"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/200_staff_post_put"
+                },
+                "examples" : {
+                  "staff" : {
+                    "$ref" : "#/components/examples/staff_post"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/staff/{company_id}/{staff_id}" : {
+      "get" : {
+        "tags" : [ "Staff" ],
+        "summary" : "Устаревшее. Поиск сотрудника по ID",
+        "description" : "### Метод позволяет получить сотрудника компании по ID\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "staff_id",
+          "in" : "path",
+          "description" : "ID сотрудника",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_5"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "examples" : {
+                  "company" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Филиала с идентификатором <_____> не найдено"
+                      }
+                    }
+                  },
+                  "staff" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Сотрудник с идентификатором <_____> не существует"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Staff" ],
+        "summary" : "Изменить сотрудника по ID",
+        "description" : "### Метод позволяет изменить данные сотрудника компании по ID\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "staff_id",
+          "in" : "path",
+          "description" : "ID сотрудника",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/staff_create_update"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/200_staff_post_put"
+                },
+                "examples" : {
+                  "staff" : {
+                    "$ref" : "#/components/examples/staff_put"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "examples" : {
+                  "company" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Филиала с идентификатором <_____> не найдено"
+                      }
+                    }
+                  },
+                  "staff" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Сотрудник с идентификатором <_____> не существует"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Staff" ],
+        "summary" : "Удалить сотрудника по ID",
+        "description" : "### Метод позволяет удалить данные сотрудника компании по ID\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "staff_id",
+          "in" : "path",
+          "description" : "ID сотрудника",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Сотрудник успешно удален (Метод не возвращает тело)",
+            "headers" : {
+              "status" : {
+                "style" : "simple",
+                "explode" : false,
+                "schema" : {
+                  "type" : "string",
+                  "example" : "204 No Content"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "examples" : {
+                  "company" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Филиала с идентификатором <_____> не найдено"
+                      }
+                    }
+                  },
+                  "staff" : {
+                    "value" : {
+                      "errors" : {
+                        "code" : 404,
+                        "message" : "Сотрудник с идентификатором <_____> не существует"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/company_users/{company_id}" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Коллекция пользователей",
+        "description" : "### Метод позволяет получить список пользователей компании\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/inline_response_200_6"
+                  }
+                },
+                "examples" : {
+                  "user" : {
+                    "$ref" : "#/components/examples/user"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/countries" : {
       "get" : {
         "tags" : [ "Directory" ],
         "summary" : "Список стран",
@@ -415,7 +1154,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_1"
+                    "$ref" : "#/components/schemas/inline_response_200_7"
                   }
                 },
                 "examples" : {
@@ -448,7 +1187,7 @@
         } ]
       }
     },
-    "/api/v1/cities" : {
+    "/cities" : {
       "get" : {
         "tags" : [ "Directory" ],
         "summary" : "Список городов",
@@ -485,7 +1224,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_2"
+                    "$ref" : "#/components/schemas/inline_response_200_8"
                   }
                 },
                 "examples" : {
@@ -792,7 +1531,405 @@
         "properties" : {
           "access" : {
             "type" : "object",
-            "description" : "Список прав (Только для авторизованного пользователя)"
+            "description" : "Объект с правами доступа для управления компанией (Только для авторизованного пользователя)"
+          }
+        }
+      },
+      "access_group" : {
+        "type" : "object",
+        "properties" : {
+          "access" : {
+            "$ref" : "#/components/schemas/access_group_access"
+          }
+        }
+      },
+      "staff_new" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Идентификатор сотрудника"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Имя сотрудника"
+          },
+          "company_id" : {
+            "type" : "integer",
+            "description" : "Идентификатор компании"
+          },
+          "specialization" : {
+            "type" : "string",
+            "description" : "Специализация сотрудника"
+          },
+          "avatar" : {
+            "type" : "string",
+            "description" : "Путь к файлу аватарки сотрудника"
+          },
+          "avatar_big" : {
+            "type" : "string",
+            "description" : "Путь к файлу аватарки сотрудника в более высоком разрешении"
+          },
+          "fired" : {
+            "type" : "integer",
+            "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
+          },
+          "status" : {
+            "type" : "integer"
+          },
+          "hidden" : {
+            "type" : "integer",
+            "description" : "1 - скрыт от онлайн записей, 0 - не скрыт"
+          },
+          "position" : {
+            "$ref" : "#/components/schemas/staff_position"
+          }
+        }
+      },
+      "user" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Идентификатор сотрудника"
+          },
+          "api_id" : {
+            "type" : "string",
+            "description" : "Внешний идентификатор сотрудника",
+            "nullable" : true
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Имя сотрудника"
+          },
+          "specialization" : {
+            "type" : "string",
+            "description" : "Специализация сотрудника"
+          },
+          "rating" : {
+            "type" : "integer",
+            "description" : "Ретинг сотрудника"
+          },
+          "show_rating" : {
+            "type" : "integer",
+            "description" : "Показывать ли рейтинг сотрудника (1 - показывать, 0 - не показывать)"
+          },
+          "avatar" : {
+            "type" : "string",
+            "description" : "Путь к файлу аватарки сотрудника"
+          },
+          "avatar_big" : {
+            "type" : "string",
+            "description" : "Путь к файлу аватарки сотрудника в более высоком разрешении"
+          },
+          "comments_count" : {
+            "type" : "integer",
+            "description" : "Кол-во комментариев к сотрунику"
+          },
+          "votes_count" : {
+            "type" : "integer",
+            "description" : "Кол-во голос, оценивших сотрудника"
+          },
+          "bookable" : {
+            "type" : "boolean"
+          },
+          "image_group" : {
+            "$ref" : "#/components/schemas/image_group"
+          },
+          "information" : {
+            "type" : "string",
+            "description" : "Дополнительная информация о сотруднике (HTML формат)"
+          },
+          "position_id" : {
+            "type" : "integer"
+          },
+          "schedule_till" : {
+            "type" : "string"
+          },
+          "weight" : {
+            "type" : "integer",
+            "description" : "Вес сотрудника. При выводе сотрудники сортируются по весу, сначала более тяжелые"
+          },
+          "fired" : {
+            "type" : "integer",
+            "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
+          },
+          "status" : {
+            "type" : "integer"
+          },
+          "hidden" : {
+            "type" : "integer",
+            "description" : "1 - скрыт от онлайн записей, 0 - не скрыт"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/user_simple"
+          },
+          "prepaid" : {
+            "type" : "string"
+          },
+          "position" : {
+            "$ref" : "#/components/schemas/staff_position"
+          },
+          "additional_info" : {
+            "$ref" : "#/components/schemas/user_additional_info"
+          }
+        }
+      },
+      "user_simple" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "login"
+          },
+          "firstname" : {
+            "type" : "string",
+            "description" : "Имя"
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "Номер телефона"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "E-mail"
+          },
+          "deleted" : {
+            "type" : "integer"
+          },
+          "group_id" : {
+            "type" : "integer"
+          },
+          "team_id" : {
+            "type" : "integer"
+          },
+          "city_id" : {
+            "type" : "integer",
+            "description" : "Id-города"
+          },
+          "ext" : {
+            "type" : "integer"
+          },
+          "amo_user_id" : {
+            "type" : "integer"
+          },
+          "amo_contact_id" : {
+            "type" : "integer"
+          },
+          "avatar" : {
+            "type" : "string"
+          }
+        }
+      },
+      "user_additional_info" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "Имя"
+          },
+          "surname" : {
+            "type" : "string",
+            "description" : "Фамилия"
+          },
+          "patronymic" : {
+            "type" : "string",
+            "description" : "Отчество"
+          },
+          "date_admission" : {
+            "type" : "string",
+            "description" : "Дата приема на работу"
+          },
+          "date_registration_end" : {
+            "type" : "string",
+            "description" : "Дата окончания регистрации/патента"
+          },
+          "phone_number" : {
+            "type" : "string",
+            "description" : "Номер телефона"
+          },
+          "citizenship" : {
+            "type" : "string",
+            "description" : "Гражданство"
+          },
+          "sex" : {
+            "type" : "string",
+            "description" : "Пол"
+          },
+          "sex_id" : {
+            "type" : "integer",
+            "description" : "Пол (id)"
+          },
+          "passport_data" : {
+            "type" : "string",
+            "description" : "Паспортные данные"
+          },
+          "inn" : {
+            "type" : "string",
+            "description" : "ИНН"
+          },
+          "number_insurance_certificates" : {
+            "type" : "string",
+            "description" : "Номер страхового свидетельства"
+          }
+        }
+      },
+      "image_group" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "entity" : {
+            "type" : "string"
+          },
+          "entity_id" : {
+            "type" : "integer"
+          },
+          "images" : {
+            "$ref" : "#/components/schemas/image_group_images"
+          }
+        },
+        "description" : "Группа изображений сотрудника"
+      },
+      "image" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string"
+          },
+          "path" : {
+            "type" : "string"
+          },
+          "width" : {
+            "type" : "string"
+          },
+          "height" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "file extension (for example .jpeg)"
+          },
+          "image_group_id" : {
+            "type" : "integer"
+          },
+          "version" : {
+            "type" : "string",
+            "description" : "sm / norm / origin"
+          }
+        }
+      },
+      "staff_position" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Должность (id)"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Должность (наименование)"
+          }
+        },
+        "description" : "Должность сотрудника"
+      },
+      "meta" : {
+        "type" : "object",
+        "properties" : {
+          "total" : {
+            "type" : "integer",
+            "description" : "Всего найдено"
+          },
+          "total_count" : {
+            "type" : "integer",
+            "description" : "Максимальное количество записей выводимых на странице"
+          }
+        }
+      },
+      "200_staff_post_put" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Идентификатор сотрудника"
+          },
+          "api_id" : {
+            "type" : "string",
+            "description" : "Внешний идентификатор сотрудника",
+            "nullable" : true
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Имя сотрудника"
+          },
+          "specialization" : {
+            "type" : "string",
+            "description" : "Специализация сотрудника"
+          },
+          "position" : {
+            "$ref" : "#/components/schemas/staff_position"
+          },
+          "show_rating" : {
+            "type" : "integer",
+            "description" : "Показывать ли рейтинг сотрудника (1 - показывать, 0 - не показывать)"
+          },
+          "rating" : {
+            "type" : "integer",
+            "description" : "Ретинг сотрудника"
+          },
+          "votes_count" : {
+            "type" : "integer",
+            "description" : "Кол-во голос, оценивших сотрудника"
+          },
+          "avatar" : {
+            "type" : "string",
+            "description" : "Путь к файлу аватарки сотрудника"
+          },
+          "avatar_big" : {
+            "type" : "string",
+            "description" : "Путь к файлу аватарки сотрудника в более высоком разрешении"
+          },
+          "comments_count" : {
+            "type" : "integer",
+            "description" : "Кол-во комментариев к сотрунику"
+          },
+          "weight" : {
+            "type" : "integer",
+            "description" : "Вес сотрудника. При выводе сотрудники сортируются по весу, сначала более тяжелые"
+          },
+          "information" : {
+            "type" : "string",
+            "description" : "Дополнительная информация о сотруднике (HTML формат)"
+          },
+          "hidden" : {
+            "type" : "integer",
+            "description" : "1 - скрыт от онлайн записей, 0 - не скрыт"
+          },
+          "fired" : {
+            "type" : "integer",
+            "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
+          },
+          "status" : {
+            "type" : "integer"
+          },
+          "position_id" : {
+            "type" : "integer"
+          },
+          "schedule_till" : {
+            "type" : "string"
+          },
+          "image_group" : {
+            "$ref" : "#/components/schemas/image_group"
+          },
+          "prepaid" : {
+            "type" : "string"
+          },
+          "user" : {
+            "$ref" : "#/components/schemas/user_simple"
           }
         }
       },
@@ -863,7 +2000,7 @@
           }
         }
       },
-      "apiv1companyid_social" : {
+      "companyid_social" : {
         "type" : "object",
         "properties" : {
           "vk" : {
@@ -881,7 +2018,7 @@
         }
       },
       "body_1" : {
-        "required" : [ "title" ],
+        "required" : [ "timezone", "title" ],
         "type" : "object",
         "properties" : {
           "title" : {
@@ -913,7 +2050,8 @@
             }
           },
           "timezone" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : "Timezone компании (необязательно, но стирается если при обновлениии не указать)"
           },
           "address" : {
             "type" : "string"
@@ -947,11 +2085,154 @@
             "type" : "integer"
           },
           "social" : {
-            "$ref" : "#/components/schemas/apiv1companyid_social"
+            "$ref" : "#/components/schemas/companyid_social"
           }
         }
       },
       "inline_response_200_1" : {
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/company"
+        }, {
+          "$ref" : "#/components/schemas/access"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "balance" : {
+              "type" : "integer"
+            },
+            "sms_price" : {
+              "type" : "number",
+              "format" : "float"
+            }
+          }
+        } ]
+      },
+      "inline_response_200_2" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean",
+            "description" : "флаг показывающий, что ответ выполнен без ошибок (true)"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "Id сети салонов"
+                  },
+                  "title" : {
+                    "type" : "string",
+                    "description" : "Название сети салонов"
+                  },
+                  "companies" : {
+                    "type" : "array",
+                    "items" : {
+                      "type" : "object",
+                      "properties" : {
+                        "id" : {
+                          "type" : "integer",
+                          "description" : "Идентификатор компании"
+                        },
+                        "title" : {
+                          "type" : "string",
+                          "description" : "Название филиала"
+                        }
+                      }
+                    }
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/access_group"
+              } ]
+            }
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/inline_response_200_2_meta"
+          }
+        }
+      },
+      "inline_response_200_3" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean",
+            "description" : "флаг показывающий, что ответ выполнен без ошибок (true)"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/staff_new"
+            }
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/meta"
+          }
+        }
+      },
+      "inline_response_200_4" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean",
+            "description" : "флаг показывающий, что ответ выполнен без ошибок (true)"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/staff_new"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/meta"
+          }
+        }
+      },
+      "inline_response_200_5" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean",
+            "description" : "флаг показывающий, что ответ выполнен без ошибок (true)"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/user"
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/meta"
+          }
+        }
+      },
+      "inline_response_200_6" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "Id пользователя"
+          },
+          "firstname" : {
+            "type" : "string",
+            "description" : "Имя пользователя"
+          },
+          "login" : {
+            "type" : "string",
+            "description" : "login пользователя для авторизации в системе (для авторизации так же можно в качестве логина поля phone и email)"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "Почтовый адрес пользователя"
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "Телефон пользоватя"
+          },
+          "access" : {
+            "type" : "object",
+            "description" : "Объект прав доступа пользоватей к модулям системы"
+          }
+        }
+      },
+      "inline_response_200_7" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -995,7 +2276,7 @@
           }
         }
       },
-      "inline_response_200_2" : {
+      "inline_response_200_8" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -1026,6 +2307,71 @@
         },
         "description" : "Объект с информацией об основном филиале"
       },
+      "access_group_access" : {
+        "type" : "object",
+        "properties" : {
+          "settings_access" : {
+            "type" : "integer"
+          },
+          "clients_access" : {
+            "type" : "integer"
+          },
+          "deposits_access" : {
+            "type" : "integer"
+          },
+          "deposit_types_access" : {
+            "type" : "integer"
+          },
+          "users_access" : {
+            "type" : "integer"
+          },
+          "loyalty_access" : {
+            "type" : "integer"
+          },
+          "loyalty_abonement_types_access" : {
+            "type" : "integer"
+          },
+          "loyalty_abonement_balance_edit_access" : {
+            "type" : "integer"
+          },
+          "loyalty_abonement_period_edit_access" : {
+            "type" : "integer"
+          },
+          "loyalty_abonement_history_access" : {
+            "type" : "integer"
+          },
+          "loyalty_cards_manual_transactions_access" : {
+            "type" : "integer"
+          },
+          "loyalty_certificate_types_access" : {
+            "type" : "integer"
+          },
+          "loyalty_programs_access" : {
+            "type" : "integer"
+          },
+          "network_services_access" : {
+            "type" : "integer"
+          },
+          "analytics_access" : {
+            "type" : "integer"
+          }
+        },
+        "description" : "Объект с правами доступа для управления сетью"
+      },
+      "image_group_images" : {
+        "type" : "object",
+        "properties" : {
+          "sm" : {
+            "$ref" : "#/components/schemas/image"
+          },
+          "norm" : {
+            "$ref" : "#/components/schemas/image"
+          },
+          "origin" : {
+            "$ref" : "#/components/schemas/image"
+          }
+        }
+      },
       "errors_errors" : {
         "type" : "object",
         "properties" : {
@@ -1046,6 +2392,14 @@
             "type" : "string"
           }
         }
+      },
+      "inline_response_200_2_meta" : {
+        "type" : "object",
+        "properties" : {
+          "total_count" : {
+            "type" : "integer"
+          }
+        }
       }
     },
     "responses" : {
@@ -1064,10 +2418,54 @@
             }
           }
         }
+      },
+      "404_not_found_company" : {
+        "description" : "Филиала с идентификатором <номер> не найдено",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/errors"
+            },
+            "example" : {
+              "errors" : {
+                "code" : 404,
+                "message" : "Филиала с идентификатором 2 не найдено"
+              }
+            }
+          }
+        }
+      },
+      "404_not_found_company_staff" : {
+        "description" : "Не найдено",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/errors"
+            },
+            "examples" : {
+              "company" : {
+                "value" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором <_____> не найдено"
+                  }
+                }
+              },
+              "staff" : {
+                "value" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Сотрудник с идентификатором <_____> не существует"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "parameters" : {
-      "id" : {
+      "id_path" : {
         "name" : "id",
         "in" : "path",
         "description" : "ID объекта",
@@ -1076,6 +2474,28 @@
         "explode" : false,
         "schema" : {
           "type" : "string"
+        }
+      },
+      "company_id_path" : {
+        "name" : "company_id",
+        "in" : "path",
+        "description" : "ID филиала",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "integer"
+        }
+      },
+      "staff_id_path" : {
+        "name" : "staff_id",
+        "in" : "path",
+        "description" : "ID сотрудника",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "integer"
         }
       },
       "country_id" : {
@@ -1100,6 +2520,17 @@
         "schema" : {
           "type" : "integer",
           "example" : 1
+        }
+      },
+      "company_id" : {
+        "name" : "company_id",
+        "in" : "path",
+        "description" : "ID компании",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "integer"
         }
       },
       "salon_id" : {
@@ -1250,6 +2681,420 @@
           "country_id" : 2,
           "title" : "Jurmala"
         } ]
+      },
+      "groups" : {
+        "value" : {
+          "success" : true,
+          "data" : [ {
+            "id" : 3100001,
+            "title" : "Сеть example 1",
+            "companies" : [ {
+              "id" : 3922222,
+              "title" : "Company example 1"
+            }, {
+              "id" : 3922223,
+              "title" : "Company example 2"
+            } ],
+            "access" : {
+              "settings_access" : 1,
+              "clients_access" : 1,
+              "deposits_access" : 1,
+              "deposit_types_access" : 1,
+              "users_access" : 1,
+              "loyalty_access" : 1,
+              "loyalty_abonement_types_access" : 1,
+              "loyalty_abonement_balance_edit_access" : 1,
+              "loyalty_abonement_period_edit_access" : 1,
+              "loyalty_abonement_history_access" : 1,
+              "loyalty_cards_manual_transactions_access" : 1,
+              "loyalty_certificate_types_access" : 1,
+              "loyalty_programs_access" : 1,
+              "network_services_access" : 1,
+              "analytics_access" : 1
+            }
+          } ],
+          "meta" : [ ]
+        }
+      },
+      "user" : {
+        "value" : [ {
+          "id" : 9090909,
+          "firstname" : "Exaploff",
+          "login" : "79998883322",
+          "email" : "examploff@test.com",
+          "phone" : "79998883322",
+          "access" : {
+            "timetable_access" : true,
+            "master_id" : 0,
+            "position_id" : 0,
+            "last_days_count" : 1000,
+            "schedule_edit_access" : true,
+            "timetable_phones_access" : true,
+            "timetable_transferring_record_access" : true,
+            "timetable_statistics_access" : true,
+            "record_form_access" : true,
+            "record_form_client_access" : true,
+            "records_autocomplete_access" : true,
+            "create_records_access" : true,
+            "edit_records_access" : true,
+            "edit_records_attendance_access" : true,
+            "records_services_cost_access" : true,
+            "records_services_discount_access" : true,
+            "record_edit_full_paid_access" : true,
+            "record_edit_full_paid_client_came_access" : true,
+            "record_edit_full_paid_client_confirm_access" : true,
+            "delete_records_access" : true,
+            "delete_customer_came_records_access" : true,
+            "delete_paid_records_access" : true,
+            "records_goods_access" : true,
+            "records_goods_create_transaction_access" : true,
+            "records_goods_create_last_days_count" : -1,
+            "records_goods_edit_transaction_access" : true,
+            "records_goods_edit_last_days_count" : -1,
+            "records_goods_cost_access" : true,
+            "records_goods_discount_access" : true,
+            "records_finances_access" : true,
+            "records_finances_last_days_count" : -1,
+            "records_finances_pay_from_deposits_access" : true,
+            "records_group_id_access" : false,
+            "records_group_id" : 0,
+            "finances_access" : true,
+            "finances_accounts_ids" : [ ],
+            "finances_transactions_access" : true,
+            "finances_last_days_count" : -1,
+            "finances_create_transactions_access" : true,
+            "finances_create_last_days_count" : -1,
+            "finances_edit_transactions_access" : true,
+            "finances_edit_last_days_count" : -1,
+            "finances_delete_transactions_access" : true,
+            "finances_transactions_excel_access" : true,
+            "finances_expenses_ids" : [ ],
+            "finances_accounts_access" : true,
+            "finances_accounts_banalce_access" : true,
+            "finances_suppliers_read_access" : true,
+            "finances_suppliers_create_access" : true,
+            "finances_suppliers_update_access" : true,
+            "finances_suppliers_delete_access" : true,
+            "finances_suppliers_excel_access" : true,
+            "finances_expenses_read_access" : true,
+            "expenses_read_access" : true,
+            "finances_expenses_create_access" : true,
+            "expenses_create_access" : true,
+            "finances_expenses_update_access" : true,
+            "expenses_update_access" : true,
+            "finances_expenses_delete_access" : true,
+            "expenses_delete_access" : true,
+            "finances_kkm_transactions_access" : true,
+            "kkm_transactions_accounts_access" : true,
+            "finances_kkm_settings_read_access" : true,
+            "kkm_settings_reed_access" : true,
+            "finances_kkm_settings_update_access" : true,
+            "kkm_settings_update_access" : true,
+            "finances_settings_invoicing_read_access" : true,
+            "settings_invoicing_read_access" : true,
+            "finances_settings_invoicing_update_access" : true,
+            "settings_invoicing_update_access" : true,
+            "finances_options_read_access" : true,
+            "options_read_access" : true,
+            "finances_options_update_access" : true,
+            "options_update_access" : true,
+            "finances_salary_schemes_access" : true,
+            "finances_salary_calc_access" : true,
+            "finances_salary_not_limitation_today_access" : true,
+            "finances_payroll_calculation_create_access" : true,
+            "finances_payroll_calculation_create_not_limitation_today_access" : true,
+            "finances_salary_access_master_checkbox" : false,
+            "finances_salary_access_master_id" : 0,
+            "get_salary_access_master_id" : 0,
+            "finances_salary_master_not_limitation_today_access" : true,
+            "finances_payroll_calculation_create_by_master_access" : false,
+            "calculation_create_by_master_not_limitation_today_access" : true,
+            "finances_period_report_access" : true,
+            "finances_period_report_excel_access" : true,
+            "finances_year_report_access" : true,
+            "finances_year_report_excel_access" : true,
+            "finances_print_check_access" : true,
+            "finances_z_report_access" : true,
+            "finances_z_report_no_limit_today_access" : true,
+            "finances_z_report_excel_access" : true,
+            "clients_access" : true,
+            "client_phones_access" : true,
+            "clients_phones_access" : true,
+            "clients_phones_email_access" : true,
+            "clients_loyalty_read_access" : true,
+            "clients_card_phone_access" : true,
+            "clients_delete_access" : true,
+            "clients_excel_access" : true,
+            "excel_access" : true,
+            "client_comments_list_access" : true,
+            "client_comments_add_access" : true,
+            "client_comments_own_edit_access" : true,
+            "client_comments_other_edit_access" : true,
+            "client_files_list_access" : true,
+            "client_files_upload_access" : true,
+            "client_files_delete_access" : true,
+            "clients_visit_master_id" : 0,
+            "get_visit_master_id" : 0,
+            "clients_show_attendance_history_access" : true,
+            "clients_deposits_access" : true,
+            "clients_deposits_create_access" : true,
+            "clients_deposits_topup_access" : true,
+            "clients_deposits_history_access" : true,
+            "dashboard_access" : true,
+            "dash_access" : true,
+            "dash_phones_access" : true,
+            "dash_records_access" : true,
+            "dash_records_last_days_count" : -1,
+            "dash_records_excel_access" : true,
+            "dash_records_phones_access" : true,
+            "dash_message_access" : true,
+            "dash_message_excel_access" : true,
+            "dash_message_phones_access" : true,
+            "dash_reviews_access" : true,
+            "dash_reviews_delete_access" : true,
+            "dashboard_calls_access" : true,
+            "dashboard_calls_excel_access" : true,
+            "dashboard_calls_phones_access" : true,
+            "loyalty_access" : true,
+            "has_loyalty_access" : true,
+            "loyalty_cards_manual_transactions_access" : true,
+            "loyalty_abonement_balance_edit_access" : true,
+            "loyalty_abonement_period_edit_access" : true,
+            "loyalty_abonement_history_access" : true,
+            "loyalty_cards_issue_and_removal_access" : true,
+            "has_loyalty_cards_manual_transactions_access" : true,
+            "loyalty_certificate_and_abonement_manual_transactions_access" : true,
+            "storages_access" : true,
+            "storages_ids" : [ ],
+            "storages_transactions_access" : true,
+            "storages_last_days_count" : -1,
+            "storages_move_goods_access" : true,
+            "storages_create_transactions_access" : true,
+            "storages_create_last_days_count" : -1,
+            "storages_create_transactions_buy_access" : true,
+            "storages_create_transactions_sale_access" : true,
+            "storages_edit_transactions_access" : true,
+            "storages_edit_last_days_count" : -1,
+            "storages_edit_transactions_buy_access" : true,
+            "storages_edit_transactions_sale_access" : true,
+            "storages_delete_transactions_access" : true,
+            "storages_transactions_excel_access" : true,
+            "storages_transactions_types" : [ ],
+            "storages_inventory_access" : true,
+            "storages_inventory_create_edit_access" : true,
+            "storages_inventory_delete_access" : true,
+            "storages_inventory_excel_access" : true,
+            "storages_remnants_report_access" : true,
+            "storages_remnants_report_excel_access" : true,
+            "storages_sales_report_access" : true,
+            "storages_sales_report_excel_access" : true,
+            "storages_consumable_report_access" : true,
+            "storages_consumable_report_excel_access" : true,
+            "storages_write_off_report_access" : true,
+            "storages_write_off_report_excel_access" : true,
+            "storages_turnover_report_access" : true,
+            "storages_turnover_report_excel_access" : true,
+            "storages_goods_crud_access" : true,
+            "storages_goods_create_access" : true,
+            "storages_goods_update_access" : true,
+            "storages_goods_title_edit_access" : true,
+            "storages_goods_category_edit_access" : true,
+            "storages_goods_selling_price_edit_access" : true,
+            "storages_goods_cost_price_edit_access" : true,
+            "storages_goods_units_edit_access" : true,
+            "storages_goods_critical_balance_edit_access" : true,
+            "storages_goods_masses_edit_access" : true,
+            "storages_goods_comment_edit_access" : true,
+            "storages_goods_archive_access" : true,
+            "storages_goods_delete_access" : true,
+            "settings_access" : true,
+            "settings_basis_access" : true,
+            "settings_information_access" : true,
+            "users_access" : true,
+            "delete_users_access" : true,
+            "create_users_access" : true,
+            "edit_users_access" : true,
+            "limited_users_access" : false,
+            "settings_user_notifications_access" : true,
+            "settings_services_access" : true,
+            "settings_services_create_access" : true,
+            "services_edit" : true,
+            "settings_services_edit_title_access" : true,
+            "settings_services_relation_category_access" : true,
+            "settings_services_edit_price_access" : true,
+            "settings_services_edit_image_access" : true,
+            "settings_services_edit_online_seance_date_time_access" : true,
+            "settings_services_edit_online_pay_access" : true,
+            "settings_services_edit_services_related_resource_access" : true,
+            "settings_positions_read" : true,
+            "settings_positions_create" : true,
+            "settings_positions_delete" : true,
+            "edit_master_service_and_duration" : true,
+            "tech_card_edit" : true,
+            "services_delete" : true,
+            "settings_master_access" : true,
+            "master_create" : true,
+            "master_edit" : true,
+            "master_delete" : true,
+            "settings_master_dismiss_access" : true,
+            "schedule_edit" : true,
+            "settings_notifications_access" : true,
+            "settings_email_notifications_access" : true,
+            "settings_template_notifications_access" : true,
+            "webhook_read_access" : true,
+            "stat_access" : true,
+            "billing_access" : true,
+            "send_sms" : true,
+            "auth_enable_check_ip" : false,
+            "auth_list_allowed_ip" : [ ],
+            "online_record_access" : true,
+            "online_record_business_card_access" : true,
+            "online_record_privacy_policy_access" : true,
+            "online_record_chat_bot_access" : true
+          }
+        } ]
+      },
+      "staff_put" : {
+        "value" : {
+          "id" : 9090909,
+          "name" : "Василий",
+          "specialization" : "парикмахер",
+          "position" : {
+            "id" : 1,
+            "title" : "Администратор"
+          },
+          "show_rating" : 0,
+          "rating" : 0,
+          "votes_count" : 0,
+          "avatar" : "https://api.yclients.com/images/no-master-sm.png",
+          "avatar_big" : "https://api.yclients.com/images/no-master.png",
+          "comments_count" : 0,
+          "weight" : 10,
+          "information" : "example information",
+          "hidden" : 0,
+          "fired" : 0,
+          "status" : 0,
+          "position_id" : 1,
+          "schedule_till" : "1970-01-01",
+          "image_group" : [ ],
+          "prepaid" : "forbidden"
+        }
+      },
+      "staff_post" : {
+        "value" : {
+          "id" : 9090908,
+          "name" : "Жермэн",
+          "specialization" : "SMM",
+          "position" : [ ],
+          "show_rating" : 1,
+          "rating" : 0,
+          "votes_count" : 0,
+          "avatar" : "https://api.yclients.com/images/no-master-sm.png",
+          "avatar_big" : "https://api.yclients.com/images/no-master.png",
+          "comments_count" : 0,
+          "weight" : 13,
+          "information" : "test",
+          "hidden" : 0,
+          "fired" : 0,
+          "status" : 0,
+          "position_id" : 0,
+          "schedule_till" : "1970-01-01",
+          "image_group" : [ ],
+          "prepaid" : "forbidden"
+        }
+      },
+      "staff" : {
+        "value" : {
+          "success" : true,
+          "data" : [ {
+            "id" : 11775571,
+            "name" : "Тимофей",
+            "company_id" : 3838388,
+            "specialization" : "Go",
+            "avatar" : "https://api.yclients.com/images/no-master-sm.png",
+            "avatar_big" : "https://api.yclients.com/images/no-master.png",
+            "fired" : 0,
+            "status" : 0,
+            "hidden" : 0,
+            "position" : {
+              "id" : 146766,
+              "title" : "Разработчик"
+            }
+          }, {
+            "id" : 11775572,
+            "name" : "Tom",
+            "company_id" : 3838388,
+            "specialization" : "SMM",
+            "avatar" : "https://api.yclients.com/images/no-master-sm.png",
+            "avatar_big" : "https://api.yclients.com/images/no-master.png",
+            "fired" : 1,
+            "status" : 0,
+            "hidden" : 0,
+            "position" : [ ]
+          } ],
+          "meta" : {
+            "total_count" : 2
+          }
+        }
+      },
+      "employee" : {
+        "value" : {
+          "success" : true,
+          "data" : {
+            "id" : 11775571,
+            "name" : "Тимофей",
+            "company_id" : 3838388,
+            "specialization" : "Go",
+            "avatar" : "https://api.yclients.com/images/no-master-sm.png",
+            "avatar_big" : "https://api.yclients.com/images/no-master.png",
+            "fired" : 0,
+            "status" : 0,
+            "hidden" : 0,
+            "position" : {
+              "id" : 146766,
+              "title" : "Разработчик"
+            }
+          },
+          "meta" : [ ]
+        }
+      }
+    },
+    "requestBodies" : {
+      "staff_create_update" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "required" : [ "name" ],
+              "type" : "object",
+              "properties" : {
+                "name" : {
+                  "type" : "string",
+                  "description" : "Имя"
+                },
+                "specialization" : {
+                  "type" : "string",
+                  "description" : "Специализация сотрудника"
+                },
+                "information" : {
+                  "type" : "string",
+                  "description" : "Дополнительная информация о сотруднике (HTML формат)"
+                },
+                "weight" : {
+                  "type" : "integer",
+                  "description" : "Вес сотрудника. При выводе сотрудники сортируются по весу, сначала более тяжелые"
+                },
+                "hidden" : {
+                  "type" : "integer",
+                  "description" : "1 - скрыт от онлайн записей, 0 - не скрыт"
+                },
+                "fired" : {
+                  "type" : "integer",
+                  "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "securitySchemes" : {
