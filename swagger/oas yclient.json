@@ -24,11 +24,17 @@
     "name" : "Users",
     "description" : "Пользователи компании"
   }, {
+    "name" : "Clients",
+    "description" : "Клиенты"
+  }, {
     "name" : "Directory",
     "description" : "Справочники"
   }, {
-    "name" : "ToDo",
-    "description" : "Доработать"
+    "name" : "Voip",
+    "description" : "События телефонии"
+  }, {
+    "name" : "Webhooks",
+    "description" : "Вебхуки"
   } ],
   "paths" : {
     "/auth" : {
@@ -1119,6 +1125,396 @@
         } ]
       }
     },
+    "/company/{company_id}/clients/search" : {
+      "post" : {
+        "tags" : [ "Clients" ],
+        "summary" : "Список клиентов",
+        "description" : "### Метод позволяет получить список клиентов компании\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "operationId" : "getClientsList",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/client_search"
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_7"
+                },
+                "example" : {
+                  "value" : {
+                    "success" : true,
+                    "data" : [ {
+                      "id" : 1,
+                      "name" : "Ричард",
+                      "phone" : "+79998880001",
+                      "sold_amount" : 500,
+                      "email" : ""
+                    }, {
+                      "id" : 2,
+                      "name" : "Martin",
+                      "phone" : "+79998880002",
+                      "sold_amount" : 300,
+                      "email" : ""
+                    } ],
+                    "meta" : {
+                      "total_count" : 2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/clients/{company_id}" : {
+      "post" : {
+        "tags" : [ "Clients" ],
+        "summary" : "Добавить клиента",
+        "description" : "### Метод позволяет создать клиента\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "operationId" : "createClient",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/client"
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201"
+                },
+                "example" : {
+                  "id" : 1,
+                  "name" : "Котов",
+                  "phone" : "+79998880006",
+                  "email" : "agent007@example.ru",
+                  "card" : "ST00006",
+                  "birth_date" : "2000-12-16",
+                  "comment" : "не берет трубку",
+                  "discount" : 15,
+                  "visits" : 0,
+                  "sex_id" : 1,
+                  "sex" : "Мужской",
+                  "sms_check" : 1,
+                  "sms_bot" : 0,
+                  "spent" : 500,
+                  "paid" : 550,
+                  "balance" : 50,
+                  "importance_id" : 2,
+                  "importance" : "Серебро",
+                  "categories" : [ {
+                    "id" : 101,
+                    "title" : "Лояльный",
+                    "color" : "#bfd4f2"
+                  } ],
+                  "last_change_date" : "2020-10-18T05:03:49+0200",
+                  "custom_fields" : { }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/client/{company_id}/{id}" : {
+      "get" : {
+        "tags" : [ "Clients" ],
+        "summary" : "Получить клиента",
+        "description" : "### Метод позволяет получить данные клиента\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "operationId" : "getClient",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID объекта",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201"
+                },
+                "example" : {
+                  "id" : 1,
+                  "name" : "Котов",
+                  "phone" : "+79998880006",
+                  "email" : "agent007@example.ru",
+                  "card" : "ST00006",
+                  "birth_date" : "2000-12-16",
+                  "comment" : "не берет трубку",
+                  "discount" : 15,
+                  "visits" : 0,
+                  "sex_id" : 1,
+                  "sex" : "Мужской",
+                  "sms_check" : 1,
+                  "sms_bot" : 0,
+                  "spent" : 500,
+                  "paid" : 550,
+                  "balance" : 50,
+                  "importance_id" : 2,
+                  "importance" : "Серебро",
+                  "categories" : [ {
+                    "id" : 101,
+                    "title" : "Лояльный",
+                    "color" : "#bfd4f2"
+                  } ],
+                  "last_change_date" : "2020-10-18T05:03:49+0200",
+                  "custom_fields" : { }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      },
+      "put" : {
+        "tags" : [ "Clients" ],
+        "summary" : "Изменить клиента",
+        "description" : "### Метод позволяет изменить данные клиента\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "operationId" : "editClient",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "description" : "ID объекта",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/client"
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_201"
+                },
+                "example" : {
+                  "id" : 1,
+                  "name" : "Котов",
+                  "phone" : "+79998880006",
+                  "email" : "agent007@example.ru",
+                  "card" : "ST00006",
+                  "birth_date" : "2000-12-16",
+                  "comment" : "не берет трубку",
+                  "discount" : 15,
+                  "visits" : 0,
+                  "sex_id" : 1,
+                  "sex" : "Мужской",
+                  "sms_check" : 1,
+                  "sms_bot" : 0,
+                  "spent" : 500,
+                  "paid" : 550,
+                  "balance" : 50,
+                  "importance_id" : 2,
+                  "importance" : "Серебро",
+                  "categories" : [ {
+                    "id" : 101,
+                    "title" : "Лояльный",
+                    "color" : "#bfd4f2"
+                  } ],
+                  "last_change_date" : "2020-10-18T05:03:49+0200",
+                  "custom_fields" : { }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
     "/countries" : {
       "get" : {
         "tags" : [ "Directory" ],
@@ -1154,7 +1550,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_7"
+                    "$ref" : "#/components/schemas/inline_response_200_8"
                   }
                 },
                 "examples" : {
@@ -1224,7 +1620,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_8"
+                    "$ref" : "#/components/schemas/inline_response_200_9"
                   }
                 },
                 "examples" : {
@@ -1254,6 +1650,241 @@
         },
         "security" : [ {
           "bearerPartner" : [ ]
+        } ]
+      }
+    },
+    "/voip/integration/" : {
+      "post" : {
+        "tags" : [ "Voip" ],
+        "summary" : "Подключить интеграцию",
+        "description" : "## Метод позволяет подключить интеграцию\n  ---\n__Авторизация с ключом Партнера__\n  \n  ---\n__Возможности метода:__\n  1. __Подключить интеграцию__ - для использования api и активации доступа к настройкам в пользовательском интерфейсе необходимо активировать интеграцию, отправив запрос \"Подключить интеграцию\".После успешного подключения, в `сетевом` интерфейсе пользователя будет открыт доступ в раздел с настройками маршрутизаци\n  2. __Отключить интеграцию__ - Для отключения интеграции можно воспользоваться методом \"Отключить интеграцию\". После отключения интеграции закрывается доступ в раздел настроек пользовательского интерфейса, обработка запросов \"Уведомление о звонке\" и \"Сохранение информации о звонке\" не производится.\n  3. __Уведомление о звонке__ - Для отображения уведомлений о входящем звонке используется метод \"Уведомление о звонке\", в параметрах указыватеся тип звонка (\"incoming\", \"outgoing\", \"internal\"), но на текущий момент уведомления отображаются только для значения \"incoming\". Уведомления отображаются для пользователей, определенных на основе настроек маршрутизации. При одновременном указании параметров \"user\" и \"diversion\" приоритетным при поиске маршрутов является \"user\".\n  4. __Сохранение информации о звонке__ - Сохранение информации о звонке автоматически происходит в сетевую историю и в историю компаний сети в соответствии с настройками маршрутизации звонка.",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body_2"
+              },
+              "examples" : {
+                "add" : {
+                  "value" : {
+                    "command" : "setup",
+                    "type" : "enable",
+                    "crm_token" : "7cf262d6-1656-43f9-86ac-2826bdc125d2"
+                  }
+                },
+                "del" : {
+                  "value" : {
+                    "command" : "setup",
+                    "type" : "disable",
+                    "crm_token" : "7cf262d6-1656-43f9-86ac-2826bdc125d2"
+                  }
+                },
+                "event" : {
+                  "value" : {
+                    "command" : "event",
+                    "type" : "incoming",
+                    "crm_token" : "7cf262d6-1656-43f9-86ac-2826bdc125d2",
+                    "phone" : "71010001100",
+                    "user" : "external_user_id",
+                    "diversion" : "71010001122"
+                  }
+                },
+                "history" : {
+                  "value" : {
+                    "command" : "history",
+                    "type" : "incoming",
+                    "crm_token" : "7cf262d6-1656-43f9-86ac-2826bdc125d2",
+                    "phone" : "71010001100",
+                    "user" : "external_user_id",
+                    "diversion" : "71010001122",
+                    "duration" : 90,
+                    "link" : "https://external.call.storage/call_record.mp3",
+                    "call_id" : "external_call_id",
+                    "status" : "success",
+                    "date" : "2018-03-20T12:00:28+00:00"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Accepted",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_202"
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartner" : [ ]
+        } ]
+      }
+    },
+    "/hooks_settings/{company_id}" : {
+      "get" : {
+        "tags" : [ "Webhooks" ],
+        "summary" : "Настройки уведомлений о событиях",
+        "description" : "### Метод позволяет получить настройки уведомлений о событиях\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/webhook"
+                },
+                "examples" : {
+                  "webhook" : {
+                    "$ref" : "#/components/examples/webhook"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Webhooks" ],
+        "summary" : "Изменение настроек уведомлений",
+        "description" : "### Метод позволяет изменить настройки уведомлений о событиях\n  ---\n__Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/webhook"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/webhook"
+                },
+                "examples" : {
+                  "webhook" : {
+                    "$ref" : "#/components/examples/webhook"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Филиала с идентификатором <номер> не найдено",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/errors"
+                },
+                "example" : {
+                  "errors" : {
+                    "code" : 404,
+                    "message" : "Филиала с идентификатором 2 не найдено"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
         } ]
       }
     }
@@ -1837,6 +2468,61 @@
         },
         "description" : "Должность сотрудника"
       },
+      "operation" : {
+        "title" : "operation",
+        "type" : "string",
+        "description" : "Тип операции",
+        "enum" : [ "AND", "OR" ]
+      },
+      "order_by" : {
+        "title" : "order_by",
+        "type" : "string",
+        "description" : "По какому полю сортировать",
+        "enum" : [ "id", "name", "phone", "email", "discount", "first_visit_date", "last_visit_date", "sold_amount", "visits_count" ]
+      },
+      "order_by_direction" : {
+        "title" : "order_by_direction",
+        "type" : "string",
+        "description" : "Порядок сортировки",
+        "enum" : [ "DESC", "ASC" ]
+      },
+      "client_id_filter" : {
+        "title" : "client_id_filter",
+        "required" : [ "type" ],
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "description" : "Поиск по идентификатору клиента",
+            "example" : "'id'"
+          },
+          "state" : {
+            "$ref" : "#/components/schemas/state"
+          }
+        }
+      },
+      "state" : {
+        "title" : "state",
+        "type" : "object",
+        "properties" : {
+          "invert" : {
+            "type" : "boolean"
+          },
+          "value" : {
+            "type" : "array",
+            "items" : {
+              "type" : "integer"
+            }
+          }
+        }
+      },
+      "categories" : {
+        "type" : "array",
+        "description" : "Массив идентификаторов категорий клиента",
+        "items" : {
+          "$ref" : "#/components/schemas/categories_inner"
+        }
+      },
       "meta" : {
         "type" : "object",
         "properties" : {
@@ -1847,6 +2533,168 @@
           "total_count" : {
             "type" : "integer",
             "description" : "Максимальное количество записей выводимых на странице"
+          }
+        }
+      },
+      "voip_add_dell" : {
+        "description" : "Подключение/отключение интеграции",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/voip"
+        } ]
+      },
+      "voip_event" : {
+        "description" : "Уведомление о звонке",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/voip"
+        }, {
+          "required" : [ "diversion", "phone" ],
+          "type" : "object",
+          "properties" : {
+            "phone" : {
+              "type" : "string",
+              "description" : "Номер звонящего абонента"
+            },
+            "user" : {
+              "type" : "string",
+              "description" : "Идентификатор абонента телефонии, sip"
+            },
+            "diversion" : {
+              "type" : "string",
+              "description" : "Номер через который пришел звонок"
+            }
+          }
+        } ]
+      },
+      "voip_history" : {
+        "description" : "Сохранение информации о звонке",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/voip"
+        }, {
+          "required" : [ "diversion", "phone" ],
+          "type" : "object",
+          "properties" : {
+            "phone" : {
+              "type" : "string",
+              "description" : "Номер звонившего абонента"
+            },
+            "user" : {
+              "type" : "string",
+              "description" : "Идентификатор абонента телефонии, sip"
+            },
+            "diversion" : {
+              "type" : "string",
+              "description" : "Номер через который пришел звонок"
+            },
+            "duration" : {
+              "type" : "number",
+              "description" : "Длительность звонка (в секундах)"
+            },
+            "link" : {
+              "type" : "string",
+              "description" : "Ссылка на запись звонка"
+            },
+            "call_id" : {
+              "type" : "string",
+              "description" : "Идентификатор звонка в системе voip"
+            },
+            "status" : {
+              "type" : "string",
+              "description" : "Статус звонка 'success'|'missed'"
+            },
+            "date" : {
+              "type" : "string",
+              "description" : "Дата и время звонка (ISO8601)"
+            }
+          }
+        } ]
+      },
+      "voip" : {
+        "required" : [ "command", "crm_token", "type" ],
+        "type" : "object",
+        "properties" : {
+          "command" : {
+            "type" : "string",
+            "description" : "Slug операции"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "Тип операции"
+          },
+          "crm_token" : {
+            "type" : "string",
+            "description" : "Токен интеграции"
+          }
+        }
+      },
+      "webhook" : {
+        "type" : "object",
+        "properties" : {
+          "company_id" : {
+            "type" : "integer",
+            "description" : "Id компании"
+          },
+          "urls" : {
+            "type" : "array",
+            "description" : "Список адресов, на которые отправлять уведомления",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "active" : {
+            "type" : "integer",
+            "description" : "Признак активности уведомлений (1 - уведомления активны, 0 - не активны)"
+          },
+          "salon" : {
+            "type" : "integer",
+            "description" : "Отправлять события по компании (1 - отправлять, 0 - нет отправлять)"
+          },
+          "service_category" : {
+            "type" : "integer",
+            "description" : "Отправлять события по категории услуг (1 - отправлять, 0 - нет отправлять)"
+          },
+          "service" : {
+            "type" : "integer",
+            "description" : "Отправлять события по услуге"
+          },
+          "master" : {
+            "type" : "integer",
+            "description" : "Отправлять события по сотруднику"
+          },
+          "good" : {
+            "type" : "integer",
+            "description" : "Отправлять события по товару"
+          },
+          "client" : {
+            "type" : "integer",
+            "description" : "Отправлять события по клиент"
+          },
+          "record" : {
+            "type" : "integer",
+            "description" : "Отправлять события по"
+          },
+          "goods_operations_sale" : {
+            "type" : "integer",
+            "description" : "Отправлять события по продаже товара"
+          },
+          "goods_operations_receipt" : {
+            "type" : "integer",
+            "description" : "Отправлять события по приходу товара"
+          },
+          "goods_operations_consumable" : {
+            "type" : "integer",
+            "description" : "Отправлять события по списанию расходника"
+          },
+          "goods_operations_stolen" : {
+            "type" : "integer",
+            "description" : "Отправлять события по списанию товара"
+          },
+          "goods_operations_move" : {
+            "type" : "integer",
+            "description" : "Отправлять события по перемещению товара"
+          },
+          "finances_operation" : {
+            "type" : "integer",
+            "description" : "Отправлять события по финансовым операциям"
           }
         }
       },
@@ -2233,6 +3081,106 @@
         }
       },
       "inline_response_200_7" : {
+        "properties" : {
+          "success" : {
+            "type" : "boolean"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/inline_response_200_7_data"
+            }
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/meta"
+          }
+        }
+      },
+      "inline_response_201" : {
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "id клиента"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Имя клиента"
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "Телефон клиента"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "Email клиента"
+          },
+          "card" : {
+            "type" : "string",
+            "description" : "Номер карты клиента"
+          },
+          "birth_date" : {
+            "type" : "string",
+            "description" : "Дата рождения клиента. Важен месяц и день"
+          },
+          "comment" : {
+            "type" : "string",
+            "description" : "Комментарий"
+          },
+          "discount" : {
+            "type" : "integer",
+            "description" : "Скидка клиента"
+          },
+          "visits" : {
+            "type" : "integer"
+          },
+          "sex_id" : {
+            "type" : "integer",
+            "description" : "Пол клиента (1 - мужской, 2 - женский, 0 - не известен)"
+          },
+          "sex" : {
+            "type" : "integer",
+            "description" : "Пол клиента"
+          },
+          "sms_check" : {
+            "type" : "integer",
+            "description" : "1 - Поздравлять с Днем Рождения по SMS, 0 - не поздравлять"
+          },
+          "sms_bot" : {
+            "type" : "integer"
+          },
+          "spent" : {
+            "type" : "integer",
+            "description" : "Сколько потратил средств"
+          },
+          "paid" : {
+            "type" : "integer",
+            "description" : "Сколько оплатил средств"
+          },
+          "balance" : {
+            "type" : "integer",
+            "description" : "Баланс клиента"
+          },
+          "importance_id" : {
+            "type" : "integer",
+            "description" : "Класс важности клиента (0 - нет, 1 - бронза, 2 - серебро, 3 - золото)"
+          },
+          "importance" : {
+            "type" : "string",
+            "description" : "Класс важности клиента"
+          },
+          "categories" : {
+            "$ref" : "#/components/schemas/categories"
+          },
+          "last_change_date" : {
+            "type" : "string"
+          },
+          "custom_fields" : {
+            "type" : "object",
+            "description" : "Массив дополнительных полей клиента в виде пар 'api-key': 'value'"
+          }
+        }
+      },
+      "inline_response_200_8" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -2276,7 +3224,7 @@
           }
         }
       },
-      "inline_response_200_8" : {
+      "inline_response_200_9" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -2290,6 +3238,36 @@
           "title" : {
             "type" : "string",
             "description" : "Краткое название города"
+          }
+        }
+      },
+      "body_2" : {
+        "oneOf" : [ {
+          "$ref" : "#/components/schemas/voip_add_dell"
+        }, {
+          "$ref" : "#/components/schemas/voip_event"
+        }, {
+          "$ref" : "#/components/schemas/voip_history"
+        } ]
+      },
+      "inline_response_202" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean"
+          },
+          "data" : {
+            "type" : "string",
+            "nullable" : true
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/inline_response_401_meta"
+          }
+        },
+        "example" : {
+          "success" : true,
+          "meta" : {
+            "message" : "Accepted"
           }
         }
       },
@@ -2372,6 +3350,20 @@
           }
         }
       },
+      "categories_inner" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "color" : {
+            "type" : "string"
+          }
+        }
+      },
       "errors_errors" : {
         "type" : "object",
         "properties" : {
@@ -2398,6 +3390,31 @@
         "properties" : {
           "total_count" : {
             "type" : "integer"
+          }
+        }
+      },
+      "inline_response_200_7_data" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "id клиента"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "Имя клиента"
+          },
+          "phone" : {
+            "type" : "string",
+            "description" : "Телефон клиента"
+          },
+          "sold_amount" : {
+            "type" : "integer",
+            "description" : "Продано"
+          },
+          "email" : {
+            "type" : "string",
+            "description" : "Почта клиента"
           }
         }
       }
@@ -2459,6 +3476,42 @@
                   }
                 }
               }
+            }
+          }
+        }
+      },
+      "20x_client" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_201"
+            },
+            "example" : {
+              "id" : 1,
+              "name" : "Котов",
+              "phone" : "+79998880006",
+              "email" : "agent007@example.ru",
+              "card" : "ST00006",
+              "birth_date" : "2000-12-16",
+              "comment" : "не берет трубку",
+              "discount" : 15,
+              "visits" : 0,
+              "sex_id" : 1,
+              "sex" : "Мужской",
+              "sms_check" : 1,
+              "sms_bot" : 0,
+              "spent" : 500,
+              "paid" : 550,
+              "balance" : 50,
+              "importance_id" : 2,
+              "importance" : "Серебро",
+              "categories" : [ {
+                "id" : 101,
+                "title" : "Лояльный",
+                "color" : "#bfd4f2"
+              } ],
+              "last_change_date" : "2020-10-18T05:03:49+0200",
+              "custom_fields" : { }
             }
           }
         }
@@ -3057,6 +4110,132 @@
           },
           "meta" : [ ]
         }
+      },
+      "webhook" : {
+        "value" : {
+          "company_id" : 3030303,
+          "urls" : [ "https://webhook.site/example_1", "https://webhook.site/example_2" ],
+          "active" : 1,
+          "salon" : 1,
+          "service_category" : 0,
+          "service" : 0,
+          "master" : 1,
+          "client" : 0,
+          "record" : 0,
+          "goods_operations_sale" : 0,
+          "goods_operations_receipt" : 0,
+          "goods_operations_consumable" : 1,
+          "goods_operations_stolen" : 0,
+          "goods_operations_move" : 0,
+          "finances_operation" : 0
+        }
+      },
+      "client_example_1" : {
+        "value" : {
+          "page" : 1,
+          "page_size" : 3,
+          "fields" : [ "id", "name" ],
+          "order_by" : "name",
+          "order_by_direction" : "desc",
+          "operation" : "AND",
+          "filters" : [ {
+            "type" : "id",
+            "state" : {
+              "value" : [ 1, 2, 3 ]
+            }
+          }, {
+            "type" : "sold_amount",
+            "state" : {
+              "from" : 0,
+              "to" : 100.77
+            }
+          }, {
+            "type" : "quick_search",
+            "state" : {
+              "value" : "Иван"
+            }
+          }, {
+            "type" : "importance",
+            "state" : {
+              "value" : [ 0, 1, 2, 3 ]
+            }
+          }, {
+            "type" : "has_mobile_app",
+            "state" : {
+              "value" : true
+            }
+          }, {
+            "type" : "category",
+            "state" : {
+              "value" : [ 1, 7 ]
+            }
+          }, {
+            "type" : "has_passteam_card",
+            "state" : {
+              "value" : true
+            }
+          }, {
+            "type" : "birthday",
+            "state" : {
+              "from" : "1985-03-22",
+              "to" : "1985-03-23"
+            }
+          }, {
+            "type" : "gender",
+            "state" : {
+              "value" : [ 0, 1, 2 ]
+            }
+          }, {
+            "type" : "record",
+            "state" : {
+              "staff" : {
+                "value" : [ 1, 2 ]
+              },
+              "service" : {
+                "value" : [ 2, 3 ]
+              },
+              "service_category" : {
+                "value" : [ 4, 5 ]
+              },
+              "status" : {
+                "value" : [ 1 ]
+              },
+              "created" : {
+                "from" : "1985-03-22",
+                "to" : "1985-03-23"
+              },
+              "records_count" : {
+                "from" : 1,
+                "to" : 99999
+              },
+              "sold_amount" : {
+                "from" : 1.001,
+                "to" : 99999.09
+              }
+            }
+          }, {
+            "type" : "client",
+            "state" : {
+              "id" : {
+                "value" : [ 1, 2, 3 ]
+              },
+              "birthday" : {
+                "from" : "1985-03-22",
+                "to" : "1985-03-23"
+              }
+            }
+          } ]
+        }
+      },
+      "client_example_2" : {
+        "value" : {
+          "page" : 1,
+          "page_size" : 2,
+          "fields" : [ "id", "name", "phone", "email", "sold_amount" ],
+          "order_by" : "id",
+          "order_by_direction" : "DESC",
+          "operation" : "AND"
+        }
       }
     },
     "requestBodies" : {
@@ -3092,6 +4271,147 @@
                   "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
                 }
               }
+            }
+          }
+        }
+      },
+      "client_search" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "properties" : {
+                "page" : {
+                  "type" : "integer",
+                  "description" : "Номер страницы"
+                },
+                "page_size" : {
+                  "type" : "integer",
+                  "description" : "Количество выводимых строк на странице. Максимум 200"
+                },
+                "fields" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string"
+                  }
+                },
+                "order_by" : {
+                  "$ref" : "#/components/schemas/order_by"
+                },
+                "order_by_direction" : {
+                  "$ref" : "#/components/schemas/order_by_direction"
+                },
+                "operation" : {
+                  "$ref" : "#/components/schemas/operation"
+                },
+                "filters" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/client_id_filter"
+                  }
+                }
+              }
+            },
+            "examples" : {
+              "example_1" : {
+                "$ref" : "#/components/examples/client_example_1"
+              },
+              "example_2" : {
+                "$ref" : "#/components/examples/client_example_2"
+              }
+            }
+          }
+        }
+      },
+      "client" : {
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "required" : [ "name", "phone" ],
+              "properties" : {
+                "name" : {
+                  "type" : "string",
+                  "description" : "Имя клиента"
+                },
+                "phone" : {
+                  "type" : "string",
+                  "description" : "Телефон клиента"
+                },
+                "email" : {
+                  "type" : "string",
+                  "description" : "Email клиента"
+                },
+                "card" : {
+                  "type" : "string",
+                  "description" : "Номер карты клиента"
+                },
+                "birth_date" : {
+                  "type" : "string",
+                  "description" : "Дата рождения клиента (формат - YYYY-MM-DD)"
+                },
+                "comment" : {
+                  "type" : "string",
+                  "description" : "Комментарий"
+                },
+                "discount" : {
+                  "type" : "integer",
+                  "description" : "Скидка клиента"
+                },
+                "sex_id" : {
+                  "type" : "integer",
+                  "description" : "Пол клиента (1 - мужской, 2 - женский, 0 - не известен)"
+                },
+                "sms_check" : {
+                  "type" : "integer",
+                  "description" : "1 - Поздравлять с Днем Рождения по SMS, 0 - не поздравлять"
+                },
+                "spent" : {
+                  "type" : "integer",
+                  "description" : "Сколько потратил средств"
+                },
+                "paid" : {
+                  "type" : "integer",
+                  "description" : "Сколько оплатил средств"
+                },
+                "balance" : {
+                  "type" : "integer",
+                  "description" : "Баланс клиента"
+                },
+                "importance_id" : {
+                  "type" : "integer",
+                  "description" : "Класс важности клиента (0 - нет, 1 - бронза, 2 - серебро, 3 - золото)"
+                },
+                "categories" : {
+                  "type" : "array",
+                  "description" : "Массив идентификаторов категорий клиента",
+                  "items" : {
+                    "type" : "string"
+                  }
+                },
+                "custom_fields" : {
+                  "type" : "object",
+                  "description" : "Массив дополнительных полей клиента в виде пар 'api-key': 'value'"
+                },
+                "sms_not" : {
+                  "type" : "integer",
+                  "description" : "1 - Исключить клиента из SMS рассылок, 0 - не исключать"
+                }
+              }
+            },
+            "example" : {
+              "name" : "Котов",
+              "phone" : "+79998880006",
+              "email" : "agent007@example.ru",
+              "card" : "ST00006",
+              "birth_date" : "2000-12-16",
+              "comment" : "не берет трубку",
+              "discount" : 15,
+              "sex_id" : 1,
+              "sms_check" : 1,
+              "spent" : 500,
+              "paid" : 550,
+              "importance_id" : 2,
+              "categories" : [ 101 ],
+              "sms_not" : 0
             }
           }
         }
