@@ -27,6 +27,9 @@
     "name" : "Clients",
     "description" : "Клиенты"
   }, {
+    "name" : "Labels",
+    "description" : "Категории"
+  }, {
     "name" : "Directory",
     "description" : "Справочники"
   }, {
@@ -1515,6 +1518,517 @@
         } ]
       }
     },
+    "/labels/{company_id}/{entity}" : {
+      "get" : {
+        "tags" : [ "Labels" ],
+        "summary" : "Список категорий (по типу категории)",
+        "description" : "### Метод позволяет получить список категорий отфильтрованный по типу ктегории\n  ---\n  __Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "entity",
+          "in" : "path",
+          "description" : "Объект категории (0 - общие метки, 1 - метки клиентов, 2 - метки записей, 3 - категории событий)",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/label"
+                  }
+                },
+                "examples" : {
+                  "labels" : {
+                    "$ref" : "#/components/examples/labels"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/labels/{company_id}" : {
+      "get" : {
+        "tags" : [ "Labels" ],
+        "summary" : "Список категорий компании (общие метки)",
+        "description" : "### Метод позволяет получить список категории компании (общие метки)\n  ---\n  __Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/label"
+                  }
+                },
+                "example" : [ {
+                  "id" : "2777801",
+                  "salon_id" : "396985",
+                  "title" : "test1",
+                  "color" : "002211",
+                  "icon" : "",
+                  "slug" : "",
+                  "entity" : "0",
+                  "deleted" : "0",
+                  "not_editable" : "0"
+                }, {
+                  "id" : "2777809",
+                  "salon_id" : "396985",
+                  "title" : "test2",
+                  "color" : "002211",
+                  "icon" : "",
+                  "slug" : "",
+                  "entity" : "0",
+                  "deleted" : "0",
+                  "not_editable" : "0"
+                } ]
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      },
+      "post" : {
+        "tags" : [ "Labels" ],
+        "summary" : "Создание категории (любого типа)",
+        "description" : "### Метод позволяет создавать категории компании (любого типа)\n  ---\n  __Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body_2"
+              },
+              "examples" : {
+                "entity_2" : {
+                  "value" : {
+                    "title" : "еntity_2",
+                    "color" : "#d6f2d4",
+                    "entity" : "2",
+                    "icon" : "tag"
+                  }
+                },
+                "entity_3" : {
+                  "value" : {
+                    "title" : "еntity_3",
+                    "color" : "#d6f2d4",
+                    "entity" : "3",
+                    "icon" : "money"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_202"
+                },
+                "example" : {
+                  "success" : true,
+                  "meta" : {
+                    "message" : "Accepted"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/labels/{company_id}/{label_id}" : {
+      "put" : {
+        "tags" : [ "Labels" ],
+        "summary" : "Изменение категории",
+        "description" : "### Метод позволяет изменять категории\n  ---\n  __Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "label_id",
+          "in" : "path",
+          "description" : "id категории",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body_3"
+              },
+              "example" : {
+                "title" : "еntity_2",
+                "color" : "#d6f2d4",
+                "entity" : "2",
+                "icon" : "tag"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "202" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_202"
+                },
+                "example" : {
+                  "success" : true,
+                  "meta" : {
+                    "message" : "Accepted"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      },
+      "delete" : {
+        "tags" : [ "Labels" ],
+        "summary" : "Удаление категории",
+        "description" : "### Метод позволяет удалять категории\n  ---\n  __Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "label_id",
+          "in" : "path",
+          "description" : "id категории",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "202" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_202"
+                },
+                "example" : {
+                  "success" : true,
+                  "meta" : {
+                    "message" : "Accepted"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/labels/{company_id}/clients" : {
+      "get" : {
+        "tags" : [ "Labels" ],
+        "summary" : "Список клиентских категорий",
+        "description" : "### Метод позволяет получить список клиентских категорий\n  ---\n  __Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Номер страницы",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "term",
+          "in" : "query",
+          "description" : "Поиск по названию категории",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "example" : "VIP"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_8"
+                },
+                "examples" : {
+                  "labels" : {
+                    "$ref" : "#/components/examples/labels_clients"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
+    "/labels/{company_id}/clients/create" : {
+      "post" : {
+        "tags" : [ "Labels" ],
+        "summary" : "Создать клиентскую категорию",
+        "description" : "### Метод позволяет создавать клиентские категории\n  ---\n  __Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/body_4"
+              },
+              "example" : {
+                "title" : "stop",
+                "color" : "#d6f2d4"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_9"
+                },
+                "example" : {
+                  "success" : true,
+                  "data" : {
+                    "title" : "stop",
+                    "salon_id" : 85,
+                    "color" : "#d6f2d4",
+                    "entity" : 1,
+                    "id" : "103"
+                  },
+                  "meta" : [ ]
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
     "/countries" : {
       "get" : {
         "tags" : [ "Directory" ],
@@ -1550,7 +2064,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_8"
+                    "$ref" : "#/components/schemas/inline_response_200_10"
                   }
                 },
                 "examples" : {
@@ -1620,7 +2134,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_9"
+                    "$ref" : "#/components/schemas/inline_response_200_11"
                   }
                 },
                 "examples" : {
@@ -1653,6 +2167,51 @@
         } ]
       }
     },
+    "/references/business_groups_with_types/" : {
+      "get" : {
+        "tags" : [ "Directory" ],
+        "summary" : "Список бизнес-типов",
+        "description" : "### Метод позволяет получить список бизнес-типов\n  ---\n  - __Авторизация с ключом Партнера__\n  - __Авторизация с ключами партнера и пользователя__",
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_200_12"
+                },
+                "examples" : {
+                  "business_groups" : {
+                    "$ref" : "#/components/examples/business_groups"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartner" : [ ]
+        }, {
+          "bearerPartnerUser" : [ ]
+        } ]
+      }
+    },
     "/voip/integration/" : {
       "post" : {
         "tags" : [ "Voip" ],
@@ -1662,7 +2221,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_2"
+                "$ref" : "#/components/schemas/body_5"
               },
               "examples" : {
                 "add" : {
@@ -1714,7 +2273,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_202"
+                  "$ref" : "#/components/schemas/inline_response_202_1"
                 }
               }
             }
@@ -2468,6 +3027,46 @@
         },
         "description" : "Должность сотрудника"
       },
+      "label" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "ID категории"
+          },
+          "salon_id" : {
+            "type" : "string",
+            "description" : "ID компании"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Название категории"
+          },
+          "color" : {
+            "type" : "string",
+            "description" : "Цвет метки в формате #RRGGBB"
+          },
+          "icon" : {
+            "type" : "string",
+            "description" : "Название иконки"
+          },
+          "slug" : {
+            "type" : "string"
+          },
+          "entity" : {
+            "type" : "string",
+            "description" : "Объект категории"
+          },
+          "deleted" : {
+            "type" : "string",
+            "description" : "Метка удаления"
+          },
+          "not_editable" : {
+            "type" : "string",
+            "description" : "Разрешены ли изменения категории (1 - разрешены, 0 - не разрешены)"
+          }
+        }
+      },
       "operation" : {
         "title" : "operation",
         "type" : "string",
@@ -2521,19 +3120,6 @@
         "description" : "Массив идентификаторов категорий клиента",
         "items" : {
           "$ref" : "#/components/schemas/categories_inner"
-        }
-      },
-      "meta" : {
-        "type" : "object",
-        "properties" : {
-          "total" : {
-            "type" : "integer",
-            "description" : "Всего найдено"
-          },
-          "total_count" : {
-            "type" : "integer",
-            "description" : "Максимальное количество записей выводимых на странице"
-          }
         }
       },
       "voip_add_dell" : {
@@ -2695,6 +3281,19 @@
           "finances_operation" : {
             "type" : "integer",
             "description" : "Отправлять события по финансовым операциям"
+          }
+        }
+      },
+      "meta" : {
+        "type" : "object",
+        "properties" : {
+          "total" : {
+            "type" : "integer",
+            "description" : "Всего найдено"
+          },
+          "total_count" : {
+            "type" : "integer",
+            "description" : "Максимальное количество записей выводимых на странице"
           }
         }
       },
@@ -3180,7 +3779,110 @@
           }
         }
       },
+      "body_2" : {
+        "required" : [ "color", "title" ],
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "Название категории"
+          },
+          "color" : {
+            "type" : "string",
+            "description" : "Цвет категории (В HEX формате. Например #aacc00 или #ac0)"
+          },
+          "entity" : {
+            "type" : "integer",
+            "description" : "Объект категории Объект категории (0 - общие метки, 1 - метки клиентов, 2 - метки записей, 3 - категории событий)"
+          },
+          "icon" : {
+            "type" : "string",
+            "description" : "Название иконки"
+          }
+        }
+      },
+      "inline_response_202" : {
+        "properties" : {
+          "success" : {
+            "type" : "boolean"
+          },
+          "data" : {
+            "type" : "object",
+            "nullable" : true
+          },
+          "message" : {
+            "$ref" : "#/components/schemas/inline_response_401_meta"
+          }
+        }
+      },
+      "body_3" : {
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "Название категории"
+          },
+          "color" : {
+            "type" : "string",
+            "description" : "Цвет категории (В HEX формате. Например #aacc00 или #ac0)"
+          },
+          "entity" : {
+            "type" : "integer",
+            "description" : "Объект категории Объект категории (0 - общие метки, 1 - метки клиентов, 2 - метки записей, 3 - категории событий)"
+          },
+          "icon" : {
+            "type" : "string",
+            "description" : "Название иконки"
+          }
+        }
+      },
       "inline_response_200_8" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/inline_response_200_8_data"
+            }
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/inline_response_200_8_meta"
+          }
+        }
+      },
+      "body_4" : {
+        "required" : [ "color", "title" ],
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "Название категории"
+          },
+          "color" : {
+            "type" : "string",
+            "description" : "Цвет категории (В HEX формате. Например #aacc00 или #ac0)"
+          }
+        }
+      },
+      "inline_response_200_9" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean"
+          },
+          "data" : {
+            "$ref" : "#/components/schemas/inline_response_200_9_data"
+          },
+          "meta" : {
+            "type" : "object",
+            "example" : [ ]
+          }
+        }
+      },
+      "inline_response_200_10" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -3224,7 +3926,7 @@
           }
         }
       },
-      "inline_response_200_9" : {
+      "inline_response_200_11" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -3241,7 +3943,24 @@
           }
         }
       },
-      "body_2" : {
+      "inline_response_200_12" : {
+        "type" : "object",
+        "properties" : {
+          "success" : {
+            "type" : "boolean"
+          },
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/inline_response_200_12_data"
+            }
+          },
+          "meta" : {
+            "$ref" : "#/components/schemas/inline_response_200_12_meta"
+          }
+        }
+      },
+      "body_5" : {
         "oneOf" : [ {
           "$ref" : "#/components/schemas/voip_add_dell"
         }, {
@@ -3250,7 +3969,7 @@
           "$ref" : "#/components/schemas/voip_history"
         } ]
       },
-      "inline_response_202" : {
+      "inline_response_202_1" : {
         "type" : "object",
         "properties" : {
           "success" : {
@@ -3417,6 +4136,130 @@
             "description" : "Почта клиента"
           }
         }
+      },
+      "inline_response_200_8_data" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID категории"
+          },
+          "salon_id" : {
+            "type" : "integer",
+            "description" : "ID компании"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Название категории"
+          },
+          "color" : {
+            "type" : "string",
+            "description" : "Цвет метки в формате #RRGGBB"
+          },
+          "icon" : {
+            "type" : "string",
+            "description" : "Название иконки"
+          },
+          "entity" : {
+            "type" : "integer",
+            "description" : "Объект категории (1 - категория для клиентов, 2 - категория для записей)"
+          },
+          "deleted" : {
+            "type" : "integer",
+            "description" : "Метка удаления"
+          },
+          "not_editable" : {
+            "type" : "integer",
+            "description" : "Разрешены ли изменения категории (1 - разрешены, 0 - не разрешены)"
+          }
+        }
+      },
+      "inline_response_200_8_meta" : {
+        "type" : "object",
+        "properties" : {
+          "page" : {
+            "type" : "integer"
+          },
+          "total_count" : {
+            "type" : "integer"
+          }
+        }
+      },
+      "inline_response_200_9_data" : {
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "description" : "Название категории"
+          },
+          "salon_id" : {
+            "type" : "integer",
+            "description" : "ID компании"
+          },
+          "color" : {
+            "type" : "string",
+            "description" : "Цвет метки в формате #RRGGBB"
+          },
+          "entity" : {
+            "type" : "integer",
+            "description" : "Объект категории (1 - категория для клиентов, 2 - категория для записей)"
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "ID категории"
+          }
+        }
+      },
+      "inline_response_200_12_types" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID типа"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Название типа"
+          },
+          "business_group_id" : {
+            "type" : "integer",
+            "description" : "ID бизнес-группы"
+          }
+        },
+        "description" : "Объект бизнес-типа имеет следующие поля"
+      },
+      "inline_response_200_12_data" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "description" : "ID категории"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "Название категории"
+          },
+          "image" : {
+            "type" : "string",
+            "description" : "Изображение группы"
+          },
+          "types" : {
+            "type" : "array",
+            "description" : "Связанные бизнес-типы",
+            "items" : {
+              "$ref" : "#/components/schemas/inline_response_200_12_types"
+            }
+          }
+        },
+        "description" : "Объект бизнес-группы имеет следующие поля"
+      },
+      "inline_response_200_12_meta" : {
+        "type" : "object",
+        "properties" : {
+          "count" : {
+            "type" : "integer"
+          }
+        }
       }
     },
     "responses" : {
@@ -3515,6 +4358,22 @@
             }
           }
         }
+      },
+      "202_accepted" : {
+        "description" : "Запрос выполнен успешно",
+        "content" : {
+          "application/json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/inline_response_202"
+            },
+            "example" : {
+              "success" : true,
+              "meta" : {
+                "message" : "Accepted"
+              }
+            }
+          }
+        }
       }
     },
     "parameters" : {
@@ -3549,6 +4408,17 @@
         "explode" : false,
         "schema" : {
           "type" : "integer"
+        }
+      },
+      "label_id_path" : {
+        "name" : "label_id",
+        "in" : "path",
+        "description" : "id категории",
+        "required" : true,
+        "style" : "simple",
+        "explode" : false,
+        "schema" : {
+          "type" : "string"
         }
       },
       "country_id" : {
@@ -4235,6 +5105,121 @@
           "order_by" : "id",
           "order_by_direction" : "DESC",
           "operation" : "AND"
+        }
+      },
+      "business_groups" : {
+        "value" : {
+          "success" : true,
+          "data" : [ {
+            "id" : 1,
+            "title" : "Красота",
+            "image" : "https://yclients.com/images/business-groups/beauty.png",
+            "types" : [ {
+              "id" : 1,
+              "title" : "Салон красоты",
+              "business_group_id" : 1
+            }, {
+              "id" : 18,
+              "title" : "Барбершоп",
+              "business_group_id" : 1
+            } ]
+          }, {
+            "id" : 2,
+            "title" : "Медицина",
+            "image" : "https://yclients.com/images/business-groups/medicine.png",
+            "types" : [ {
+              "id" : 4,
+              "title" : "Медицинский центр",
+              "business_group_id" : 2
+            }, {
+              "id" : 32,
+              "title" : "Стоматология",
+              "business_group_id" : 2
+            } ]
+          } ],
+          "meta" : {
+            "count" : 2
+          }
+        }
+      },
+      "labels" : {
+        "value" : [ {
+          "id" : "703",
+          "salon_id" : "85",
+          "title" : "Полная онлайн-оплата",
+          "color" : "#6ba94b",
+          "icon" : "money",
+          "slug" : "prepaid_full",
+          "entity" : "2",
+          "deleted" : "0",
+          "not_editable" : "1"
+        }, {
+          "id" : "704",
+          "salon_id" : "85",
+          "title" : "Частичная онлайн-оплата",
+          "color" : "#eece5d",
+          "icon" : "usd",
+          "slug" : "prepaid_not_full",
+          "entity" : "2",
+          "deleted" : "0",
+          "not_editable" : "1"
+        }, {
+          "id" : "705",
+          "salon_id" : "85",
+          "title" : "Сотрудник важен",
+          "color" : "#ff2828",
+          "icon" : "lock",
+          "slug" : "",
+          "entity" : "2",
+          "deleted" : "0",
+          "not_editable" : "1"
+        }, {
+          "id" : "706",
+          "salon_id" : "85",
+          "title" : "Сотрудник не важен",
+          "color" : "#009800",
+          "icon" : "unlock",
+          "slug" : "",
+          "entity" : "2",
+          "deleted" : "0",
+          "not_editable" : "1"
+        } ]
+      },
+      "labels_clients" : {
+        "value" : {
+          "success" : true,
+          "data" : [ {
+            "id" : 100,
+            "salon_id" : 85,
+            "title" : "VIP",
+            "color" : "#fbca04",
+            "icon" : "tag",
+            "entity" : 1,
+            "deleted" : 0,
+            "not_editable" : 0
+          }, {
+            "id" : 101,
+            "salon_id" : 85,
+            "title" : "Лояльный",
+            "color" : "#bfd4f2",
+            "icon" : "tag",
+            "entity" : 1,
+            "deleted" : 0,
+            "not_editable" : 0
+          }, {
+            "id" : 102,
+            "salon_id" : 85,
+            "title" : "Постоянный",
+            "color" : "#009800",
+            "icon" : "tag",
+            "entity" : 1,
+            "deleted" : 0,
+            "not_editable" : 0
+          } ],
+          "meta" : {
+            "page" : 1,
+            "total_count" : 3
+          }
         }
       }
     },
