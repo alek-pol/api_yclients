@@ -6,7 +6,7 @@
     "contact" : {
       "email" : "alek_pol@outlook.com"
     },
-    "version" : "2.0.0"
+    "version" : "test_jschema"
   },
   "servers" : [ {
     "url" : "https://api.yclients.com/api/v1"
@@ -40,440 +40,6 @@
     "description" : "Вебхуки"
   } ],
   "paths" : {
-    "/auth" : {
-      "post" : {
-        "tags" : [ "Authorization" ],
-        "summary" : "Получение API-ключа пользователя",
-        "description" : "## Метод позволяет получить API-ключ пользователя\n  ---\n__Авторизация с ключом Партнера__",
-        "operationId" : "getUserToken",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/body"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Запрос выполнен успешно",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200"
-                },
-                "example" : {
-                  "0" : "1234ccbbeeff1234aaddff77ee338811",
-                  "id" : 100001,
-                  "user_token" : "1234ccbbeeff1234aaddff77ee338811",
-                  "name" : "Example_user",
-                  "phone" : "7xxxxxxxxxx",
-                  "login" : "7xxxxxxxxxx",
-                  "email" : "user@example.com",
-                  "avatar" : "https://api.yclients.com/images/no-master.png"
-                }
-              }
-            }
-          },
-          "404" : {
-            "description" : "Пользователя с такими параметрами авторизации не существует",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/errors"
-                },
-                "example" : {
-                  "errors" : {
-                    "code" : 404,
-                    "message" : "Пользователя с такими параметрами авторизации не существует"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "bearerPartner" : [ ]
-        } ]
-      }
-    },
-    "/companies" : {
-      "get" : {
-        "tags" : [ "Companies" ],
-        "summary" : "Список компаний",
-        "description" : "### Метод позволяет получить список компаний\n  ---\n__Возможна авторизация с ключами:__\n  - __Партнера__;\n  - __Партнера__ и __пользователя__.",
-        "operationId" : "getCompanies",
-        "parameters" : [ {
-          "name" : "group_id",
-          "in" : "query",
-          "description" : "ID сети компаний (Если нужны объекты входящие в конкретную сеть)",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer"
-          }
-        }, {
-          "name" : "title",
-          "in" : "query",
-          "description" : "Поиск по вхождению подстроки в название компании",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "my",
-          "in" : "query",
-          "description" : "Только для авторизованного пользователя. Если нужно компании, на управление которыми пользователь имеет права",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer",
-            "example" : 1
-          }
-        }, {
-          "name" : "active",
-          "in" : "query",
-          "description" : "Если нужно получить только активные для онлайн-записи компании",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer",
-            "example" : 1
-          }
-        }, {
-          "name" : "moderated",
-          "in" : "query",
-          "description" : "Если нужно получить только прошедшие модерацию компании. Т.е. чей контент проверен для публикации",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer",
-            "example" : 1
-          }
-        }, {
-          "name" : "forBooking",
-          "in" : "query",
-          "description" : "Если нужно получить поле next_slot по каждой компании",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer",
-            "example" : 1
-          }
-        }, {
-          "name" : "show_groups",
-          "in" : "query",
-          "description" : "Включить в обьект компании список сетей в которые входит эта компания",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer"
-          }
-        }, {
-          "name" : "city_id",
-          "in" : "query",
-          "description" : "ID города  (см. метод - __cities__)",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer",
-            "example" : 1
-          }
-        }, {
-          "name" : "coordinate_lat",
-          "in" : "query",
-          "description" : "Широта центра поиска по координатам",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "coordinate_lon",
-          "in" : "query",
-          "description" : "Долгота центра поиска по координатам",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "distance",
-          "in" : "query",
-          "description" : "Радиус поиска",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "count",
-          "in" : "query",
-          "description" : "Количество объектов на странице",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer"
-          }
-        }, {
-          "name" : "page",
-          "in" : "query",
-          "description" : "Номер страницы",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Запрос выполнен успешно",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "allOf" : [ {
-                      "$ref" : "#/components/schemas/company"
-                    }, {
-                      "$ref" : "#/components/schemas/access"
-                    }, {
-                      "type" : "object",
-                      "properties" : {
-                        "balance" : {
-                          "type" : "integer"
-                        },
-                        "sms_price" : {
-                          "type" : "number",
-                          "format" : "float"
-                        }
-                      }
-                    } ]
-                  }
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Не указаны авторизационные данные",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_401"
-                },
-                "example" : {
-                  "success" : false,
-                  "meta" : {
-                    "message" : "Не указаны авторизационные данные"
-                  }
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Произошла ошибка"
-          }
-        },
-        "deprecated" : false,
-        "security" : [ {
-          "bearerPartner" : [ ]
-        }, {
-          "bearerPartnerUser" : [ ]
-        } ]
-      }
-    },
-    "/company/{id}" : {
-      "get" : {
-        "tags" : [ "Companies" ],
-        "summary" : "Получить компанию",
-        "description" : "### Метод позволяет получить компанию:\n  ---\n__Авторизация с ключом партнера__",
-        "operationId" : "GetCompany",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "ID объекта",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        }, {
-          "name" : "forBooking",
-          "in" : "query",
-          "description" : "Включить в обьект компании список сетей в которые входит эта компания",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer"
-          }
-        }, {
-          "name" : "show_groups",
-          "in" : "query",
-          "description" : "Включить в обьект компании список сетей в которые входит эта компания",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "integer"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Запрос выполнен успешно",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/company"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Не указаны авторизационные данные",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_401"
-                },
-                "example" : {
-                  "success" : false,
-                  "meta" : {
-                    "message" : "Не указаны авторизационные данные"
-                  }
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Произошла ошибка"
-          }
-        },
-        "deprecated" : false,
-        "security" : [ {
-          "bearerPartner" : [ ]
-        } ]
-      },
-      "put" : {
-        "tags" : [ "Companies" ],
-        "summary" : "Изменить компанию",
-        "description" : "### Метод позволяет изменить компанию\n\n  ---\n__Авторизация с ключами: партнера и пользователя__",
-        "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "description" : "ID объекта",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
-          }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/body_1"
-              }
-            }
-          }
-        },
-        "responses" : {
-          "200" : {
-            "description" : "Запрос выполнен успешно",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_1"
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Не указаны авторизационные данные",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_401"
-                },
-                "example" : {
-                  "success" : false,
-                  "meta" : {
-                    "message" : "Не указаны авторизационные данные"
-                  }
-                }
-              }
-            }
-          },
-          "500" : {
-            "description" : "Произошла ошибка"
-          }
-        },
-        "security" : [ {
-          "bearerPartnerUser" : [ ]
-        } ]
-      }
-    },
-    "/groups" : {
-      "get" : {
-        "tags" : [ "Companies" ],
-        "summary" : "Список сетей салонов",
-        "description" : "### Метод позволяет получить список доступных пользователю сетей\n  ---\n__Авторизация с ключами партнера и пользователя__",
-        "operationId" : "GetNetworksAvailableToUser",
-        "responses" : {
-          "200" : {
-            "description" : "Запрос выполнен успешно",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_2"
-                },
-                "examples" : {
-                  "groups" : {
-                    "$ref" : "#/components/examples/groups"
-                  }
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Не указаны авторизационные данные",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_401"
-                },
-                "example" : {
-                  "success" : false,
-                  "meta" : {
-                    "message" : "Не указаны авторизационные данные"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "bearerPartnerUser" : [ ]
-        } ]
-      }
-    },
     "/company/{company_id}/staff" : {
       "get" : {
         "tags" : [ "Staff" ],
@@ -496,7 +62,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_3"
+                  "$ref" : "#/components/schemas/inline_response_200"
                 },
                 "examples" : {
                   "staff" : {
@@ -588,7 +154,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_4"
+                  "$ref" : "#/components/schemas/inline_response_200_1"
                 },
                 "examples" : {
                   "employee" : {
@@ -819,7 +385,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_5"
+                  "$ref" : "#/components/schemas/inline_response_200_2"
                 }
               }
             }
@@ -1079,7 +645,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_6"
+                    "$ref" : "#/components/schemas/inline_response_200_3"
                   }
                 },
                 "examples" : {
@@ -1154,7 +720,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_7"
+                  "$ref" : "#/components/schemas/inline_response_200_4"
                 },
                 "example" : {
                   "value" : {
@@ -1240,6 +806,7 @@
         },
         "responses" : {
           "201" : {
+            "description" : "",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1316,7 +883,7 @@
     "/client/{company_id}/{id}" : {
       "get" : {
         "tags" : [ "Clients" ],
-        "summary" : "Получить клиента",
+        "summary" : "Получить клиента по ID",
         "description" : "### Метод позволяет получить данные клиента\n  ---\n__Авторизация с ключами партнера и пользователя__",
         "operationId" : "getClient",
         "parameters" : [ {
@@ -1342,6 +909,7 @@
         } ],
         "responses" : {
           "200" : {
+            "description" : "",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1445,6 +1013,7 @@
         },
         "responses" : {
           "200" : {
+            "description" : "",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1507,73 +1076,6 @@
                   "errors" : {
                     "code" : 404,
                     "message" : "Филиала с идентификатором 2 не найдено"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security" : [ {
-          "bearerPartnerUser" : [ ]
-        } ]
-      }
-    },
-    "/labels/{company_id}/{entity}" : {
-      "get" : {
-        "tags" : [ "Labels" ],
-        "summary" : "Список категорий (по типу категории)",
-        "description" : "### Метод позволяет получить список категорий отфильтрованный по типу ктегории\n  ---\n  __Авторизация с ключами партнера и пользователя__",
-        "parameters" : [ {
-          "name" : "company_id",
-          "in" : "path",
-          "description" : "ID филиала",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "integer"
-          }
-        }, {
-          "name" : "entity",
-          "in" : "path",
-          "description" : "Объект категории (0 - общие метки, 1 - метки клиентов, 2 - метки записей, 3 - категории событий)",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "integer"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Запрос выполнен успешно",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/label"
-                  }
-                },
-                "examples" : {
-                  "labels" : {
-                    "$ref" : "#/components/examples/labels"
-                  }
-                }
-              }
-            }
-          },
-          "401" : {
-            "description" : "Не указаны авторизационные данные",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_401"
-                },
-                "example" : {
-                  "success" : false,
-                  "meta" : {
-                    "message" : "Не указаны авторизационные данные"
                   }
                 }
               }
@@ -1676,7 +1178,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_2"
+                "$ref" : "#/components/schemas/labels_company_id_body"
               },
               "examples" : {
                 "entity_2" : {
@@ -1739,6 +1241,72 @@
       }
     },
     "/labels/{company_id}/{label_id}" : {
+      "get" : {
+        "tags" : [ "Labels" ],
+        "summary" : "Список категорий (по типу категории)",
+        "description" : "### Метод позволяет получить список категорий отфильтрованный по типу ктегории\n  ---\n  __Авторизация с ключами партнера и пользователя__",
+        "parameters" : [ {
+          "name" : "company_id",
+          "in" : "path",
+          "description" : "ID филиала",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer"
+          }
+        }, {
+          "name" : "label_id",
+          "in" : "path",
+          "description" : "Объект категории (0 - общие метки, 1 - метки клиентов, 2 - метки записей, 3 - категории событий)",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "integer",
+            "enum" : [ 0, 1, 2, 3 ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Запрос выполнен успешно",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/label"
+                  }
+                },
+                "examples" : {
+                  "labels" : {
+                    "$ref" : "#/components/examples/labels"
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "description" : "Не указаны авторизационные данные",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/inline_response_401"
+                },
+                "example" : {
+                  "success" : false,
+                  "meta" : {
+                    "message" : "Не указаны авторизационные данные"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security" : [ {
+          "bearerPartnerUser" : [ ]
+        } ]
+      },
       "put" : {
         "tags" : [ "Labels" ],
         "summary" : "Изменение категории",
@@ -1768,7 +1336,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_3"
+                "$ref" : "#/components/schemas/company_id_label_id_body"
               },
               "example" : {
                 "title" : "еntity_2",
@@ -1924,7 +1492,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_8"
+                  "$ref" : "#/components/schemas/inline_response_200_5"
                 },
                 "examples" : {
                   "labels" : {
@@ -1976,7 +1544,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_4"
+                "$ref" : "#/components/schemas/clients_create_body"
               },
               "example" : {
                 "title" : "stop",
@@ -1991,7 +1559,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_9"
+                  "$ref" : "#/components/schemas/inline_response_200_6"
                 },
                 "example" : {
                   "success" : true,
@@ -2064,7 +1632,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_10"
+                    "$ref" : "#/components/schemas/inline_response_200_7"
                   }
                 },
                 "examples" : {
@@ -2134,7 +1702,7 @@
                 "schema" : {
                   "type" : "array",
                   "items" : {
-                    "$ref" : "#/components/schemas/inline_response_200_11"
+                    "$ref" : "#/components/schemas/inline_response_200_8"
                   }
                 },
                 "examples" : {
@@ -2178,7 +1746,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/inline_response_200_12"
+                  "$ref" : "#/components/schemas/inline_response_200_9"
                 },
                 "examples" : {
                   "business_groups" : {
@@ -2206,8 +1774,6 @@
           }
         },
         "security" : [ {
-          "bearerPartner" : [ ]
-        }, {
           "bearerPartnerUser" : [ ]
         } ]
       }
@@ -2215,13 +1781,13 @@
     "/voip/integration/" : {
       "post" : {
         "tags" : [ "Voip" ],
-        "summary" : "Подключить интеграцию",
+        "summary" : "Подключить / отключить интеграцию; уведомление о звонке; сохраниение",
         "description" : "## Метод позволяет подключить интеграцию\n  ---\n__Авторизация с ключом Партнера__\n  \n  ---\n__Возможности метода:__\n  1. __Подключить интеграцию__ - для использования api и активации доступа к настройкам в пользовательском интерфейсе необходимо активировать интеграцию, отправив запрос \"Подключить интеграцию\".После успешного подключения, в `сетевом` интерфейсе пользователя будет открыт доступ в раздел с настройками маршрутизаци\n  2. __Отключить интеграцию__ - Для отключения интеграции можно воспользоваться методом \"Отключить интеграцию\". После отключения интеграции закрывается доступ в раздел настроек пользовательского интерфейса, обработка запросов \"Уведомление о звонке\" и \"Сохранение информации о звонке\" не производится.\n  3. __Уведомление о звонке__ - Для отображения уведомлений о входящем звонке используется метод \"Уведомление о звонке\", в параметрах указыватеся тип звонка (\"incoming\", \"outgoing\", \"internal\"), но на текущий момент уведомления отображаются только для значения \"incoming\". Уведомления отображаются для пользователей, определенных на основе настроек маршрутизации. При одновременном указании параметров \"user\" и \"diversion\" приоритетным при поиске маршрутов является \"user\".\n  4. __Сохранение информации о звонке__ - Сохранение информации о звонке автоматически происходит в сетевую историю и в историю компаний сети в соответствии с настройками маршрутизации звонка.",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_5"
+                "$ref" : "#/components/schemas/voip_integration_body"
               },
               "examples" : {
                 "add" : {
@@ -2492,7 +2058,8 @@
             "description" : "Название города компании"
           },
           "active" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "phone" : {
             "type" : "string",
@@ -2552,7 +2119,8 @@
             "description" : "True - если у компании выключен сервис SMS напоминаний клиентам"
           },
           "reminds_sms_default" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "group_priority" : {
             "type" : "integer",
@@ -2560,7 +2128,8 @@
             "format" : "int32"
           },
           "bookform_group_priority" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "description" : {
             "type" : "string",
@@ -2568,15 +2137,18 @@
           },
           "photos" : {
             "type" : "array",
+            "description" : "",
             "items" : {
               "type" : "string"
             }
           },
           "seance_delay_step" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "show_any_master" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "allow_delete_record" : {
             "type" : "boolean",
@@ -2595,7 +2167,8 @@
             "description" : "Запретить удалять записи за период. (В секундах)"
           },
           "timetable_off" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "site" : {
             "type" : "string",
@@ -2606,49 +2179,64 @@
             "description" : "Почтовый код (индекс)"
           },
           "business_group_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "business_type_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "is_charge_active" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "print_bill_on" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "print_bill_type" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : ""
           },
           "record_type_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "auto_pay_account_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "auto_pay_bank_account_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "is_admin_app" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "push_notification_phone_confirm" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "switched_to_tariff" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "sms_enabled" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "activity_record_clients_count_max" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "activity_online_record_clients_count_max" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "is_individual" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "social" : {
             "$ref" : "#/components/schemas/social"
@@ -2765,7 +2353,8 @@
             "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
           },
           "status" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "hidden" : {
             "type" : "integer",
@@ -2845,7 +2434,8 @@
             "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
           },
           "status" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "hidden" : {
             "type" : "integer",
@@ -3361,7 +2951,8 @@
             "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
           },
           "status" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "position_id" : {
             "type" : "integer"
@@ -3388,47 +2979,21 @@
           }
         }
       },
-      "body" : {
-        "type" : "object",
-        "properties" : {
-          "login" : {
-            "type" : "string",
-            "description" : "В качестве логина может быть использован номер телефона пользователя в формате 79161234567 или его Email"
-          },
-          "password" : {
-            "type" : "string",
-            "description" : "Пароль пользователя"
-          }
-        }
-      },
       "inline_response_200" : {
         "type" : "object",
         "properties" : {
-          "0" : {
-            "type" : "string"
+          "success" : {
+            "type" : "boolean",
+            "description" : "флаг показывающий, что ответ выполнен без ошибок (true)"
           },
-          "id" : {
-            "type" : "integer"
+          "data" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/staff_new"
+            }
           },
-          "user_token" : {
-            "type" : "string",
-            "description" : "API-ключа пользователя"
-          },
-          "name" : {
-            "type" : "string",
-            "description" : "Имя пользователя"
-          },
-          "phone" : {
-            "type" : "string"
-          },
-          "login" : {
-            "type" : "string"
-          },
-          "email" : {
-            "type" : "string"
-          },
-          "avatar" : {
-            "type" : "string"
+          "meta" : {
+            "$ref" : "#/components/schemas/meta"
           }
         }
       },
@@ -3447,180 +3012,7 @@
           }
         }
       },
-      "companyid_social" : {
-        "type" : "object",
-        "properties" : {
-          "vk" : {
-            "type" : "string",
-            "description" : "Аккаунт во Вконтакте"
-          },
-          "instagram" : {
-            "type" : "string",
-            "description" : "Аккаунт в Instagram"
-          },
-          "telegram" : {
-            "type" : "string",
-            "description" : "Аккаунт в Telegram"
-          }
-        }
-      },
-      "body_1" : {
-        "required" : [ "timezone", "title" ],
-        "type" : "object",
-        "properties" : {
-          "title" : {
-            "type" : "string",
-            "description" : "Название филиала (Используется внутри системы)"
-          },
-          "short_descr" : {
-            "type" : "string",
-            "description" : "Категория компании"
-          },
-          "country_id" : {
-            "type" : "integer",
-            "description" : "Идентификатор страны кампании (одно из двух \\ country)"
-          },
-          "country" : {
-            "type" : "string",
-            "description" : "Название страны кампании (одно из двух \\ country_id)"
-          },
-          "city_id" : {
-            "type" : "integer"
-          },
-          "city" : {
-            "type" : "string"
-          },
-          "phones" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "timezone" : {
-            "type" : "integer",
-            "description" : "Timezone компании (необязательно, но стирается если при обновлениии не указать)"
-          },
-          "address" : {
-            "type" : "string"
-          },
-          "coordinate_lat" : {
-            "type" : "number",
-            "description" : "Широта, на которой расположена компания",
-            "format" : "float"
-          },
-          "coordinate_lon" : {
-            "type" : "number",
-            "description" : "Долгота, на которой расположена компания",
-            "format" : "float"
-          },
-          "description" : {
-            "type" : "string",
-            "description" : "Описание"
-          },
-          "site" : {
-            "type" : "string",
-            "description" : "Ссылка на сайт"
-          },
-          "zip" : {
-            "type" : "integer",
-            "description" : "Почтовый код (индекс)"
-          },
-          "business_group_id" : {
-            "type" : "integer"
-          },
-          "business_type_id" : {
-            "type" : "integer"
-          },
-          "social" : {
-            "$ref" : "#/components/schemas/companyid_social"
-          }
-        }
-      },
       "inline_response_200_1" : {
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/company"
-        }, {
-          "$ref" : "#/components/schemas/access"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "balance" : {
-              "type" : "integer"
-            },
-            "sms_price" : {
-              "type" : "number",
-              "format" : "float"
-            }
-          }
-        } ]
-      },
-      "inline_response_200_2" : {
-        "type" : "object",
-        "properties" : {
-          "success" : {
-            "type" : "boolean",
-            "description" : "флаг показывающий, что ответ выполнен без ошибок (true)"
-          },
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "allOf" : [ {
-                "type" : "object",
-                "properties" : {
-                  "id" : {
-                    "type" : "integer",
-                    "description" : "Id сети салонов"
-                  },
-                  "title" : {
-                    "type" : "string",
-                    "description" : "Название сети салонов"
-                  },
-                  "companies" : {
-                    "type" : "array",
-                    "items" : {
-                      "type" : "object",
-                      "properties" : {
-                        "id" : {
-                          "type" : "integer",
-                          "description" : "Идентификатор компании"
-                        },
-                        "title" : {
-                          "type" : "string",
-                          "description" : "Название филиала"
-                        }
-                      }
-                    }
-                  }
-                }
-              }, {
-                "$ref" : "#/components/schemas/access_group"
-              } ]
-            }
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/inline_response_200_2_meta"
-          }
-        }
-      },
-      "inline_response_200_3" : {
-        "type" : "object",
-        "properties" : {
-          "success" : {
-            "type" : "boolean",
-            "description" : "флаг показывающий, что ответ выполнен без ошибок (true)"
-          },
-          "data" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/staff_new"
-            }
-          },
-          "meta" : {
-            "$ref" : "#/components/schemas/meta"
-          }
-        }
-      },
-      "inline_response_200_4" : {
         "type" : "object",
         "properties" : {
           "success" : {
@@ -3635,7 +3027,7 @@
           }
         }
       },
-      "inline_response_200_5" : {
+      "inline_response_200_2" : {
         "type" : "object",
         "properties" : {
           "success" : {
@@ -3650,7 +3042,7 @@
           }
         }
       },
-      "inline_response_200_6" : {
+      "inline_response_200_3" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -3679,7 +3071,7 @@
           }
         }
       },
-      "inline_response_200_7" : {
+      "inline_response_200_4" : {
         "properties" : {
           "success" : {
             "type" : "boolean"
@@ -3687,7 +3079,7 @@
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/inline_response_200_7_data"
+              "$ref" : "#/components/schemas/inline_response_200_4_data"
             }
           },
           "meta" : {
@@ -3779,7 +3171,7 @@
           }
         }
       },
-      "body_2" : {
+      "labels_company_id_body" : {
         "required" : [ "color", "title" ],
         "type" : "object",
         "properties" : {
@@ -3815,7 +3207,7 @@
           }
         }
       },
-      "body_3" : {
+      "company_id_label_id_body" : {
         "type" : "object",
         "properties" : {
           "title" : {
@@ -3836,7 +3228,7 @@
           }
         }
       },
-      "inline_response_200_8" : {
+      "inline_response_200_5" : {
         "type" : "object",
         "properties" : {
           "success" : {
@@ -3845,15 +3237,15 @@
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/inline_response_200_8_data"
+              "$ref" : "#/components/schemas/inline_response_200_5_data"
             }
           },
           "meta" : {
-            "$ref" : "#/components/schemas/inline_response_200_8_meta"
+            "$ref" : "#/components/schemas/inline_response_200_5_meta"
           }
         }
       },
-      "body_4" : {
+      "clients_create_body" : {
         "required" : [ "color", "title" ],
         "type" : "object",
         "properties" : {
@@ -3867,14 +3259,14 @@
           }
         }
       },
-      "inline_response_200_9" : {
+      "inline_response_200_6" : {
         "type" : "object",
         "properties" : {
           "success" : {
             "type" : "boolean"
           },
           "data" : {
-            "$ref" : "#/components/schemas/inline_response_200_9_data"
+            "$ref" : "#/components/schemas/inline_response_200_6_data"
           },
           "meta" : {
             "type" : "object",
@@ -3882,7 +3274,7 @@
           }
         }
       },
-      "inline_response_200_10" : {
+      "inline_response_200_7" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -3926,7 +3318,7 @@
           }
         }
       },
-      "inline_response_200_11" : {
+      "inline_response_200_8" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -3943,7 +3335,7 @@
           }
         }
       },
-      "inline_response_200_12" : {
+      "inline_response_200_9" : {
         "type" : "object",
         "properties" : {
           "success" : {
@@ -3952,15 +3344,15 @@
           "data" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/inline_response_200_12_data"
+              "$ref" : "#/components/schemas/inline_response_200_9_data"
             }
           },
           "meta" : {
-            "$ref" : "#/components/schemas/inline_response_200_12_meta"
+            "$ref" : "#/components/schemas/inline_response_200_9_meta"
           }
         }
       },
-      "body_5" : {
+      "voip_integration_body" : {
         "oneOf" : [ {
           "$ref" : "#/components/schemas/voip_add_dell"
         }, {
@@ -4002,7 +3394,8 @@
             "description" : "ID наименование филиала"
           }
         },
-        "description" : "Объект с информацией об основном филиале"
+        "description" : "Объект с информацией об основном филиале",
+        "example" : null
       },
       "access_group_access" : {
         "type" : "object",
@@ -4053,7 +3446,8 @@
             "type" : "integer"
           }
         },
-        "description" : "Объект с правами доступа для управления сетью"
+        "description" : "Объект с правами доступа для управления сетью",
+        "example" : null
       },
       "image_group_images" : {
         "type" : "object",
@@ -4067,7 +3461,8 @@
           "origin" : {
             "$ref" : "#/components/schemas/image"
           }
-        }
+        },
+        "example" : null
       },
       "categories_inner" : {
         "type" : "object",
@@ -4094,7 +3489,8 @@
             "type" : "string",
             "description" : "Текст ошибки"
           }
-        }
+        },
+        "example" : null
       },
       "inline_response_401_meta" : {
         "type" : "object",
@@ -4102,17 +3498,10 @@
           "message" : {
             "type" : "string"
           }
-        }
+        },
+        "example" : null
       },
-      "inline_response_200_2_meta" : {
-        "type" : "object",
-        "properties" : {
-          "total_count" : {
-            "type" : "integer"
-          }
-        }
-      },
-      "inline_response_200_7_data" : {
+      "inline_response_200_4_data" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -4135,9 +3524,11 @@
             "type" : "string",
             "description" : "Почта клиента"
           }
-        }
+        },
+        "nullable" : true,
+        "example" : null
       },
-      "inline_response_200_8_data" : {
+      "inline_response_200_5_data" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -4172,9 +3563,10 @@
             "type" : "integer",
             "description" : "Разрешены ли изменения категории (1 - разрешены, 0 - не разрешены)"
           }
-        }
+        },
+        "example" : null
       },
-      "inline_response_200_8_meta" : {
+      "inline_response_200_5_meta" : {
         "type" : "object",
         "properties" : {
           "page" : {
@@ -4183,9 +3575,10 @@
           "total_count" : {
             "type" : "integer"
           }
-        }
+        },
+        "example" : null
       },
-      "inline_response_200_9_data" : {
+      "inline_response_200_6_data" : {
         "type" : "object",
         "properties" : {
           "title" : {
@@ -4208,9 +3601,10 @@
             "type" : "string",
             "description" : "ID категории"
           }
-        }
+        },
+        "example" : null
       },
-      "inline_response_200_12_types" : {
+      "inline_response_200_9_types" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -4226,9 +3620,10 @@
             "description" : "ID бизнес-группы"
           }
         },
-        "description" : "Объект бизнес-типа имеет следующие поля"
+        "description" : "Объект бизнес-типа имеет следующие поля",
+        "example" : null
       },
-      "inline_response_200_12_data" : {
+      "inline_response_200_9_data" : {
         "type" : "object",
         "properties" : {
           "id" : {
@@ -4247,19 +3642,21 @@
             "type" : "array",
             "description" : "Связанные бизнес-типы",
             "items" : {
-              "$ref" : "#/components/schemas/inline_response_200_12_types"
+              "$ref" : "#/components/schemas/inline_response_200_9_types"
             }
           }
         },
-        "description" : "Объект бизнес-группы имеет следующие поля"
+        "description" : "Объект бизнес-группы имеет следующие поля",
+        "example" : null
       },
-      "inline_response_200_12_meta" : {
+      "inline_response_200_9_meta" : {
         "type" : "object",
         "properties" : {
           "count" : {
             "type" : "integer"
           }
-        }
+        },
+        "example" : null
       }
     },
     "responses" : {
@@ -4324,6 +3721,7 @@
         }
       },
       "20x_client" : {
+        "description" : "",
         "content" : {
           "application/json" : {
             "schema" : {
