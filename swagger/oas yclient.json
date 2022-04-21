@@ -44,13 +44,13 @@
       "post" : {
         "tags" : [ "Authorization" ],
         "summary" : "Получение API-ключа пользователя",
-        "description" : "## Метод позволяет получить API-ключ пользователя\n  ---\n__Авторизация с ключом Партнера__",
+        "description" : "## Метод позволяет получить API-ключ пользователя.\n  ---\n__Авторизация с ключом Партнера__",
         "operationId" : "getUserToken",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body"
+                "$ref" : "#/components/schemas/auth_body"
               }
             }
           }
@@ -300,7 +300,7 @@
     "/company/{id}" : {
       "get" : {
         "tags" : [ "Companies" ],
-        "summary" : "Получить компанию",
+        "summary" : "Получить компанию по ID",
         "description" : "### Метод позволяет получить компанию:\n  ---\n__Авторизация с ключом партнера__",
         "operationId" : "GetCompany",
         "parameters" : [ {
@@ -372,7 +372,7 @@
       },
       "put" : {
         "tags" : [ "Companies" ],
-        "summary" : "Изменить компанию",
+        "summary" : "Изменить компанию по ID",
         "description" : "### Метод позволяет изменить компанию\n\n  ---\n__Авторизация с ключами: партнера и пользователя__",
         "parameters" : [ {
           "name" : "id",
@@ -389,7 +389,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_1"
+                "$ref" : "#/components/schemas/company_id_body"
               }
             }
           }
@@ -1240,6 +1240,7 @@
         },
         "responses" : {
           "201" : {
+            "description" : "",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1316,7 +1317,7 @@
     "/client/{company_id}/{id}" : {
       "get" : {
         "tags" : [ "Clients" ],
-        "summary" : "Получить клиента",
+        "summary" : "Получить клиента по ID",
         "description" : "### Метод позволяет получить данные клиента\n  ---\n__Авторизация с ключами партнера и пользователя__",
         "operationId" : "getClient",
         "parameters" : [ {
@@ -1342,6 +1343,7 @@
         } ],
         "responses" : {
           "200" : {
+            "description" : "",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1445,6 +1447,7 @@
         },
         "responses" : {
           "200" : {
+            "description" : "",
             "content" : {
               "application/json" : {
                 "schema" : {
@@ -1676,7 +1679,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_2"
+                "$ref" : "#/components/schemas/labels_company_id_body"
               },
               "examples" : {
                 "entity_2" : {
@@ -1768,7 +1771,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_3"
+                "$ref" : "#/components/schemas/company_id_label_id_body"
               },
               "example" : {
                 "title" : "еntity_2",
@@ -1976,7 +1979,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_4"
+                "$ref" : "#/components/schemas/clients_create_body"
               },
               "example" : {
                 "title" : "stop",
@@ -2206,8 +2209,6 @@
           }
         },
         "security" : [ {
-          "bearerPartner" : [ ]
-        }, {
           "bearerPartnerUser" : [ ]
         } ]
       }
@@ -2215,13 +2216,13 @@
     "/voip/integration/" : {
       "post" : {
         "tags" : [ "Voip" ],
-        "summary" : "Подключить интеграцию",
+        "summary" : "Подключить / отключить интеграцию; уведомление о звонке; сохраниение",
         "description" : "## Метод позволяет подключить интеграцию\n  ---\n__Авторизация с ключом Партнера__\n  \n  ---\n__Возможности метода:__\n  1. __Подключить интеграцию__ - для использования api и активации доступа к настройкам в пользовательском интерфейсе необходимо активировать интеграцию, отправив запрос \"Подключить интеграцию\".После успешного подключения, в `сетевом` интерфейсе пользователя будет открыт доступ в раздел с настройками маршрутизаци\n  2. __Отключить интеграцию__ - Для отключения интеграции можно воспользоваться методом \"Отключить интеграцию\". После отключения интеграции закрывается доступ в раздел настроек пользовательского интерфейса, обработка запросов \"Уведомление о звонке\" и \"Сохранение информации о звонке\" не производится.\n  3. __Уведомление о звонке__ - Для отображения уведомлений о входящем звонке используется метод \"Уведомление о звонке\", в параметрах указыватеся тип звонка (\"incoming\", \"outgoing\", \"internal\"), но на текущий момент уведомления отображаются только для значения \"incoming\". Уведомления отображаются для пользователей, определенных на основе настроек маршрутизации. При одновременном указании параметров \"user\" и \"diversion\" приоритетным при поиске маршрутов является \"user\".\n  4. __Сохранение информации о звонке__ - Сохранение информации о звонке автоматически происходит в сетевую историю и в историю компаний сети в соответствии с настройками маршрутизации звонка.",
         "requestBody" : {
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/body_5"
+                "$ref" : "#/components/schemas/voip_integration_body"
               },
               "examples" : {
                 "add" : {
@@ -2492,7 +2493,8 @@
             "description" : "Название города компании"
           },
           "active" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "phone" : {
             "type" : "string",
@@ -2552,7 +2554,8 @@
             "description" : "True - если у компании выключен сервис SMS напоминаний клиентам"
           },
           "reminds_sms_default" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "group_priority" : {
             "type" : "integer",
@@ -2560,7 +2563,8 @@
             "format" : "int32"
           },
           "bookform_group_priority" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "description" : {
             "type" : "string",
@@ -2568,15 +2572,18 @@
           },
           "photos" : {
             "type" : "array",
+            "description" : "",
             "items" : {
               "type" : "string"
             }
           },
           "seance_delay_step" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "show_any_master" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "allow_delete_record" : {
             "type" : "boolean",
@@ -2595,7 +2602,8 @@
             "description" : "Запретить удалять записи за период. (В секундах)"
           },
           "timetable_off" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "site" : {
             "type" : "string",
@@ -2606,49 +2614,64 @@
             "description" : "Почтовый код (индекс)"
           },
           "business_group_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "business_type_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "is_charge_active" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "print_bill_on" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "print_bill_type" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : ""
           },
           "record_type_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "auto_pay_account_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "auto_pay_bank_account_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "is_admin_app" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "push_notification_phone_confirm" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "switched_to_tariff" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "sms_enabled" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "activity_record_clients_count_max" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "activity_online_record_clients_count_max" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "is_individual" : {
-            "type" : "boolean"
+            "type" : "boolean",
+            "description" : ""
           },
           "social" : {
             "$ref" : "#/components/schemas/social"
@@ -2765,7 +2788,8 @@
             "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
           },
           "status" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "hidden" : {
             "type" : "integer",
@@ -2845,7 +2869,8 @@
             "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
           },
           "status" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "hidden" : {
             "type" : "integer",
@@ -3361,7 +3386,8 @@
             "description" : "статус увольнения (1 - уволен, 0 - не уволен)"
           },
           "status" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "position_id" : {
             "type" : "integer"
@@ -3388,7 +3414,7 @@
           }
         }
       },
-      "body" : {
+      "auth_body" : {
         "type" : "object",
         "properties" : {
           "login" : {
@@ -3462,9 +3488,10 @@
             "type" : "string",
             "description" : "Аккаунт в Telegram"
           }
-        }
+        },
+        "example" : null
       },
-      "body_1" : {
+      "company_id_body" : {
         "required" : [ "timezone", "title" ],
         "type" : "object",
         "properties" : {
@@ -3526,10 +3553,12 @@
             "description" : "Почтовый код (индекс)"
           },
           "business_group_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "business_type_id" : {
-            "type" : "integer"
+            "type" : "integer",
+            "description" : ""
           },
           "social" : {
             "$ref" : "#/components/schemas/companyid_social"
@@ -3779,7 +3808,7 @@
           }
         }
       },
-      "body_2" : {
+      "labels_company_id_body" : {
         "required" : [ "color", "title" ],
         "type" : "object",
         "properties" : {
@@ -3815,7 +3844,7 @@
           }
         }
       },
-      "body_3" : {
+      "company_id_label_id_body" : {
         "type" : "object",
         "properties" : {
           "title" : {
@@ -3853,7 +3882,7 @@
           }
         }
       },
-      "body_4" : {
+      "clients_create_body" : {
         "required" : [ "color", "title" ],
         "type" : "object",
         "properties" : {
@@ -3960,7 +3989,7 @@
           }
         }
       },
-      "body_5" : {
+      "voip_integration_body" : {
         "oneOf" : [ {
           "$ref" : "#/components/schemas/voip_add_dell"
         }, {
@@ -4002,7 +4031,8 @@
             "description" : "ID наименование филиала"
           }
         },
-        "description" : "Объект с информацией об основном филиале"
+        "description" : "Объект с информацией об основном филиале",
+        "example" : null
       },
       "access_group_access" : {
         "type" : "object",
@@ -4053,7 +4083,8 @@
             "type" : "integer"
           }
         },
-        "description" : "Объект с правами доступа для управления сетью"
+        "description" : "Объект с правами доступа для управления сетью",
+        "example" : null
       },
       "image_group_images" : {
         "type" : "object",
@@ -4067,7 +4098,8 @@
           "origin" : {
             "$ref" : "#/components/schemas/image"
           }
-        }
+        },
+        "example" : null
       },
       "categories_inner" : {
         "type" : "object",
@@ -4094,7 +4126,8 @@
             "type" : "string",
             "description" : "Текст ошибки"
           }
-        }
+        },
+        "example" : null
       },
       "inline_response_401_meta" : {
         "type" : "object",
@@ -4102,7 +4135,8 @@
           "message" : {
             "type" : "string"
           }
-        }
+        },
+        "example" : null
       },
       "inline_response_200_2_meta" : {
         "type" : "object",
@@ -4110,7 +4144,9 @@
           "total_count" : {
             "type" : "integer"
           }
-        }
+        },
+        "nullable" : true,
+        "example" : null
       },
       "inline_response_200_7_data" : {
         "type" : "object",
@@ -4135,7 +4171,9 @@
             "type" : "string",
             "description" : "Почта клиента"
           }
-        }
+        },
+        "nullable" : true,
+        "example" : null
       },
       "inline_response_200_8_data" : {
         "type" : "object",
@@ -4172,7 +4210,8 @@
             "type" : "integer",
             "description" : "Разрешены ли изменения категории (1 - разрешены, 0 - не разрешены)"
           }
-        }
+        },
+        "example" : null
       },
       "inline_response_200_8_meta" : {
         "type" : "object",
@@ -4183,7 +4222,8 @@
           "total_count" : {
             "type" : "integer"
           }
-        }
+        },
+        "example" : null
       },
       "inline_response_200_9_data" : {
         "type" : "object",
@@ -4208,7 +4248,8 @@
             "type" : "string",
             "description" : "ID категории"
           }
-        }
+        },
+        "example" : null
       },
       "inline_response_200_12_types" : {
         "type" : "object",
@@ -4226,7 +4267,8 @@
             "description" : "ID бизнес-группы"
           }
         },
-        "description" : "Объект бизнес-типа имеет следующие поля"
+        "description" : "Объект бизнес-типа имеет следующие поля",
+        "example" : null
       },
       "inline_response_200_12_data" : {
         "type" : "object",
@@ -4251,7 +4293,8 @@
             }
           }
         },
-        "description" : "Объект бизнес-группы имеет следующие поля"
+        "description" : "Объект бизнес-группы имеет следующие поля",
+        "example" : null
       },
       "inline_response_200_12_meta" : {
         "type" : "object",
@@ -4259,7 +4302,8 @@
           "count" : {
             "type" : "integer"
           }
-        }
+        },
+        "example" : null
       }
     },
     "responses" : {
@@ -4324,6 +4368,7 @@
         }
       },
       "20x_client" : {
+        "description" : "",
         "content" : {
           "application/json" : {
             "schema" : {
